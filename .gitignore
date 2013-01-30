@@ -1,0 +1,28 @@
+# Project
+conf/settings.php
+
+# Platform
+.Trashes/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.bak
+*.log
+*.swp
+*.tmp
+*~
+
+# IDE
+## IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+## NetBeans
+nbproject/
+
+## Zend
+.settings/
+.buildpath
+.project

@@ -1,0 +1,14 @@
+<?php
+/**
+ * settings for development environments
+ */
+
+// error reporting
+error_reporting( E_ALL | E_STRICT );
+
+// error display
+ini_set( 'display_errors', 1 );
+ini_set( 'html_errors', 1 );
+
+// PHPMD rulesets directory 
+define( 'RULESETS_DIR', '/usr/share/pear-data/PHP_PMD/resources/rulesets' );

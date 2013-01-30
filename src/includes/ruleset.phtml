@@ -1,0 +1,66 @@
+<div>
+    <p>A tool to quickly create PHPMD rulesets.</p>
+    <p>PHPMD analyzes a PHP project for potential problems within its code. These include:</p>
+    <ul>
+        <li>Possible bugs</li>
+        <li>Suboptimal code</li>
+        <li>Overcomplicated expressions</li>
+        <li>Unused parameters, methods and properties</li>
+    </ul>
+    <p><a href="http://phpmd.org/" target="_blank">Find out more</a></p>
+</div>
+
+<fieldset id="basicsettings">
+    <legend>Basic Settings</legend>
+    <div class="form-horizontal">
+        <div class="control-group">
+            <div class="control-label">
+                <label><strong>Name</strong></label>
+            </div>
+            <div class="controls">
+                <input class="span3" type="text" name="name" placeholder="The name of the ruleset">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="control-label">
+                <label><strong>Description</strong></label>
+            </div>
+            <div class="controls">
+                <textarea class="span5" name="description" placeholder="A short description describing the ruleset"></textarea>
+            </div>
+        </div>
+    </div>
+
+</fieldset>
+
+<? foreach ( get_rulesets() as $filename => $ruleset ): ?>
+    <? $id = substr( $filename, 0, -4 ); ?>
+    <? $navbar[$id] = $ruleset['name']; ?>
+    <fieldset id="<?= $id; ?>">
+        <legend><?= $ruleset['name']; ?></legend>
+        <p><?= $ruleset['description']; ?></p>
+        <? foreach ( $ruleset['rules'] as $rule ): ?>
+            <div class="form-horizontal">
+                <div class="control-group">
+                    <div class="control-label">
+                        <div class="switch switch-small">
+                            <input name="rulesets/<?= "{$filename}/{$rule['name']}"; ?>" type="checkbox" checked="checked" />
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <p>
+                            <strong><?= $rule['name']; ?></strong>
+                            <?= $rule['description']; ?>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        <? endforeach; ?>
+    </fieldset>
+<? endforeach; ?>
+
+<fieldset>
+    <legend>PHPMD Ruleset</legend>
+    <p>phpmd.xml</p>
+    <pre id="phpmd"></pre>
+</fieldset>

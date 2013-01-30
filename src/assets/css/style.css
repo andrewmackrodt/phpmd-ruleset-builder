@@ -1,0 +1,19 @@
+@media screen and (max-width: 750px) {
+    #navbar {
+        display: none;
+    }
+}
+
+#bitbucket {
+    float: right;
+}
+
+#navbar {
+    margin-top: 10px;
+    width: 180px;
+}
+
+#footer {
+    float: right;
+    margin-bottom: 10px;
+}

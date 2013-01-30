@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>PHPMD Ruleset Builder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Andrew Mackrodt" />
+    <link href="assets/css/bootstrap-combined.min.css" rel="stylesheet" />
+    <link href="assets/css/bootstrap-switch.css" rel="stylesheet" />
+    <link href="assets/css/style.css" rel="stylesheet" />
+</head>
+<body data-spy="scroll" data-target="#navbar-container">
+<div class="container">
+    <div class="row">
+        <div id="navbar-container" class="span3">
+            <ul id="navbar" class="nav nav-list affix">
+            <? foreach ( get_navbar_contents() as $id => $name ): ?>
+                <li>
+                    <a href="#<?= $id; ?>"><i class="icon-chevron-right"></i> <?= $name; ?></a>
+                </li>
+            <? endforeach; ?>
+            </ul>
+        </div>
+        <div class="span9">
+            <div id="bitbucket">
+                <img src="//ajmm.org/wp-includes/images/favicon/bitbucket.png" alt="" />
+                <small>
+                    <a href="https://bitbucket.org/andrewmackrodt/phpmd-ruleset-builder" target="_blank">Fork me on Bitbucket</a>
+                </small>
+            </div>
+            <h1>PHPMD Ruleset Builder</h1>
