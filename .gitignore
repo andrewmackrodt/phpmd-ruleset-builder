@@ -1,5 +1,6 @@
 # Project
 conf/settings.php
+.htaccess
 
 # Platform
 .Trashes/

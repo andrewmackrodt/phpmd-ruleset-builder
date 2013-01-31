@@ -1,0 +1,21 @@
+# It may not be possible to host the repository outside of the web root under
+# certain environments. This rule will internally rewrite all requests to the
+# public folder as a security precaution and to enable a clean url structure.
+#
+# This rule should be avoided if possible by setting DocumentRoot to src/public
+# in the site's configuration. Alternatively, an Alias or symlink should be
+# used if the site is accessed via a subdirectory.
+
+<IfModule mod_rewrite.c>
+
+    RewriteEngine on
+    RewriteRule .* src/public/$0
+
+    # The following is optional unless it's removed from src/public/.htaccess
+    # An infinite rewrite problem will occur if neither definition is present
+
+    #RewriteCond %{REQUEST_FILENAME} !-d
+    #RewriteCond %{REQUEST_FILENAME} !-f
+    #RewriteRule .* src/public/index.php [L]
+
+</IfModule>

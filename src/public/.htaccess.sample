@@ -1,0 +1,7 @@
+# Rewrite 404 pages to index.php
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule .* index.php [L]
+</IfModule>
