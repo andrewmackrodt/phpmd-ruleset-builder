@@ -41,7 +41,7 @@
                 <div class="control-group">
                     <div class="control-label">
                         <div class="switch switch-medium">
-                            <input name="rulesets/<?= "{$filename}/{$rule['name']}"; ?>" type="checkbox" checked="checked" />
+                            <input name="<?= $rule['id']; ?>" type="checkbox" checked="checked" />
                         </div>
                     </div>
                     <div class="controls">
@@ -52,13 +52,13 @@
                             </p>
                         </div>
                         <fieldset>
-                            <? foreach ( $rule['properties'] as $property ): ?>
+                            <? foreach ( $rule['properties'] as $name => $property ): ?>
                                 <div class="control-group">
                                     <p>
                                         <strong><?= $property['name']; ?></strong>
                                         <?= $property['description']; ?>
                                     </p>
-                                    <input name="rulesets/<?= "{$filename}/{$rule['name']}"; ?>" placeholder="<?= $property['value']; ?>" type="text" />
+                                    <input name="<?= $name; ?>" placeholder="<?= $property['value']; ?>" type="text" />
                                 </div>
                             <? endforeach; ?>
                         </fieldset>

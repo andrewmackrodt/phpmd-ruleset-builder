@@ -1,7 +1,7 @@
 /**
  * @param {string?} name
  * @param {string?} description
- * @param {Array?} rules
+ * @param {{}} rules
  * @return {string}
  */
 function createXmlDocument( name, description, rules )
@@ -46,8 +46,25 @@ function createXmlDocument( name, description, rules )
     buffer.push( '\n    <description>' + description + '</description>' );
 
     // append the rules to the string buffer
-    for ( var i = 0; i < rules.length; i++ ) {
-        buffer.push( '\n    <rule ref="' + rules[i] + '"/>' );
+    for ( var ref in rules ) {
+        buffer.push( '\n    <rule ref="' + ref + '"' );
+
+        // the rule has no properties
+        if ( Object.keys( rules[ref] ).length == 0 ) {
+            buffer.push( ' />' );
+            continue;
+        }
+
+        // the rule has properties
+        buffer.push( '>\n        <properties>' );
+
+        for ( var property in rules[ref] ) {
+            buffer.push( '\n            <property name="'
+                    + property + '" value="'
+                    + rules[ref][property] + '" />' );
+        }
+
+        buffer.push( '\n        </properties>\n    </rule>' );
     }
 
     // close the document
@@ -58,14 +75,26 @@ function createXmlDocument( name, description, rules )
 }
 
 /**
- * @returns {Array}
+ * @returns {{}}
  */
 function getRules()
 {
-    var rules = [];
+    var rules = {};
 
     $( 'input[type="checkbox"]:checked' ).each( function() {
-        rules.push( this.name );
+        var rule = {};
+
+        $( this ).parents( 'div.control-group' ).find( 'input[type="text"]' ).each( function() {
+            var $input      = $( this );
+            var placeholder = $input.attr( 'placeholder' );
+            var value       = $.trim( $input.val() ) || placeholder;
+
+            if ( value != placeholder ) {
+                rule[this.name] = value;
+            }
+        } );
+
+        rules[this.name] = rule;
     } );
 
     return rules;
@@ -84,7 +113,7 @@ function outputXmlDocument()
  */
 ( function() {
     // name and description text inputs
-    $( 'input[name="name"], textarea[name="description"]' ).blur( outputXmlDocument );
+    $( 'input[type="text"], textarea[name="description"]' ).blur( outputXmlDocument );
     // checkboxes
     $( 'input:checkbox' ).change( outputXmlDocument );
     // handle first time page load
