@@ -117,12 +117,33 @@ function get_rulesets()
         // parse the ruleset
         $ruleset = simplexml_load_file( "{$rulesdir}/{$filename}" );
         $rules = array();
-        foreach ( $ruleset->rule as $rule ) {
+        foreach ( $ruleset->rule as $ruleXml ) {
             // append the parsed rule
-            $rules[] = array(
-                    'name'        => (string)$rule['name'],
-                    'description' => (string)$rule->description
+            $rule = array(
+                    'name'        => (string)$ruleXml['name'],
+                    'description' => (string)$ruleXml->description,
+                    'example'     => property_exists( $ruleXml, 'example' )
+                                            ? (string)$ruleXml->example
+                                            : null,
+                    'id'          => "rulesets/{$filename}/{$ruleXml['name']}",
+                    'properties'  => array()
                 );
+
+            $rules[$rule['name']] = &$rule;
+
+            if ( !property_exists( $ruleXml, 'properties' ) ) {
+                continue;
+            }
+
+            foreach ( $ruleXml->properties->property as $propertyXml ) {
+                $rule['properties'][(string)$propertyXml['name']] = array(
+                        'name'        => (string)$propertyXml['name'],
+                        'description' => (string)$propertyXml['description'],
+                        'value'       => (string)$propertyXml['value']
+                    );
+            }
+
+            unset( $rule );
         }
 
         $name = (string)$ruleset['name'];

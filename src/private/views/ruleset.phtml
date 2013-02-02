@@ -10,9 +10,9 @@
     <p><a href="http://phpmd.org/" target="_blank">Find out more</a></p>
 </div>
 
-<fieldset id="basicsettings">
-    <legend>Basic Settings</legend>
-    <div class="form-horizontal">
+<form class="form-horizontal">
+    <fieldset id="basicsettings">
+        <legend>Basic Settings</legend>
         <div class="control-group">
             <div class="control-label">
                 <label><strong>Name</strong></label>
@@ -29,35 +29,45 @@
                 <textarea class="span5" name="description" placeholder="A short description describing the ruleset"></textarea>
             </div>
         </div>
-    </div>
+    </fieldset>
 
-</fieldset>
-
-<? foreach ( get_rulesets() as $filename => $ruleset ): ?>
-    <? $id = substr( $filename, 0, -4 ); ?>
-    <? $navbar[$id] = $ruleset['name']; ?>
-    <fieldset id="<?= $id; ?>">
-        <legend><?= $ruleset['name']; ?></legend>
-        <p><?= $ruleset['description']; ?></p>
-        <? foreach ( $ruleset['rules'] as $rule ): ?>
-            <div class="form-horizontal">
+    <? foreach ( get_rulesets() as $filename => $ruleset ): ?>
+        <? $id = substr( $filename, 0, -4 ); ?>
+        <? $navbar[$id] = $ruleset['name']; ?>
+        <fieldset id="<?= $id; ?>">
+            <legend><?= $ruleset['name']; ?></legend>
+            <p><?= $ruleset['description']; ?></p>
+            <? foreach ( $ruleset['rules'] as $rule ): ?>
                 <div class="control-group">
                     <div class="control-label">
-                        <div class="switch switch-small">
+                        <div class="switch switch-medium">
                             <input name="rulesets/<?= "{$filename}/{$rule['name']}"; ?>" type="checkbox" checked="checked" />
                         </div>
                     </div>
                     <div class="controls">
-                        <p>
-                            <strong><?= $rule['name']; ?></strong>
-                            <?= $rule['description']; ?>
-                        </p>
+                        <div>
+                            <p>
+                                <strong><?= $rule['name']; ?></strong>
+                                <?= $rule['description']; ?>
+                            </p>
+                        </div>
+                        <fieldset>
+                            <? foreach ( $rule['properties'] as $property ): ?>
+                                <div class="control-group">
+                                    <p>
+                                        <strong><?= $property['name']; ?></strong>
+                                        <?= $property['description']; ?>
+                                    </p>
+                                    <input name="rulesets/<?= "{$filename}/{$rule['name']}"; ?>" placeholder="<?= $property['value']; ?>" type="text" />
+                                </div>
+                            <? endforeach; ?>
+                        </fieldset>
                     </div>
                 </div>
-            </div>
-        <? endforeach; ?>
-    </fieldset>
-<? endforeach; ?>
+            <? endforeach; ?>
+        </fieldset>
+    <? endforeach; ?>
+</form>
 
 <fieldset>
     <legend>PHPMD Ruleset</legend>
