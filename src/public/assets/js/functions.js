@@ -50,7 +50,7 @@ function createXmlDocument( name, description, rules )
         buffer.push( '\n    <rule ref="' + ref + '"' );
 
         // the rule has no properties
-        if ( Object.keys( rules[ref] ).length == 0 ) {
+        if ( $.isEmptyObject( rules[ref] ) ) {
             buffer.push( ' />' );
             continue;
         }
