@@ -48,6 +48,11 @@ define( 'ASSETS_URL'  , BASE_URL . '/assets' );
 require_once CONFIG_PATH  . '/settings.php';
 require_once PRIVATE_PATH . '/functions.php';
 
+if ( $requestUri == '/cache.manifest' ) {
+    send_cache_manifest();
+    return;
+}
+
 require PRIVATE_PATH . '/views/header.phtml';
 
 if ( get_rulesets() ) {

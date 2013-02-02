@@ -168,4 +168,42 @@ function get_rulesets()
     $cache['rulesets'] = escape( $rulesets );
     return $cache['rulesets'];
 };
+
+function send_cache_manifest()
+{
+    header( 'Content-Type: text/cache-manifest' );
+
+    $scandir = function( $dir ) use ( &$scandir ) {
+        $files = array();
+        foreach ( scandir( $dir ) as $file ) {
+            if ( $file[0] == '.' ) {
+                continue;
+            }
+            $file = "{$dir}/{$file}";
+            if ( is_dir( $file ) ) {
+                $files = array_merge( $files, $scandir( $file ) );
+            } else {
+                if ( preg_match( '/\.(css|gif|js|png|swf)$/i', $file ) ) {
+                    // only add the file if it has an allowed file extension
+                    $files[] = $file;
+                }
+            }
+        }
+        return $files;
+    };
+
+    $manifest = $scandir( PUBLIC_PATH );
+
+    array_walk( $manifest, function( &$v ) {
+        $v = substr( $v, strlen( PUBLIC_PATH ) + 1 );
+    } );
+
+    array_unshift( $manifest, 'CACHE MANIFEST' );
+    array_unshift( $manifest, '# Cache Manifest ' . date( DATE_ISO8601 ) );
+    $manifest[] = 'http://ajmm.org/wp-includes/images/favicon/bitbucket.png';
+    $manifest[] = 'FALLBACK:';
+    $manifest[] = 'index.php .';
+
+    echo implode( "\n", $manifest );
+}
 //EOF functions.php

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en"<?= isset( $_GET['offline'] ) ? ' manifest="cache.manifest"' : ''; ?>>
 <head>
     <meta charset="utf-8" />
     <title>PHPMD Ruleset Builder</title>
