@@ -126,21 +126,20 @@ function get_rulesets()
                                             ? (string)$ruleXml->example
                                             : null,
                     'id'          => "rulesets/{$filename}/{$ruleXml['name']}",
+                    'priority'    => (int)$ruleXml->priority,
                     'properties'  => array()
                 );
 
             $rules[$rule['name']] = &$rule;
 
-            if ( !property_exists( $ruleXml, 'properties' ) ) {
-                continue;
-            }
-
-            foreach ( $ruleXml->properties->property as $propertyXml ) {
-                $rule['properties'][(string)$propertyXml['name']] = array(
-                        'name'        => (string)$propertyXml['name'],
-                        'description' => (string)$propertyXml['description'],
-                        'value'       => (string)$propertyXml['value']
-                    );
+            if ( property_exists( $ruleXml, 'properties' ) ) {
+                foreach ( $ruleXml->properties->property as $propertyXml ) {
+                    $rule['properties'][(string)$propertyXml['name']] = array(
+                            'name'        => (string)$propertyXml['name'],
+                            'description' => (string)$propertyXml['description'],
+                            'value'       => (string)$propertyXml['value']
+                        );
+                }
             }
 
             unset( $rule );
