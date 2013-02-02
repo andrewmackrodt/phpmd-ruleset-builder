@@ -13,4 +13,5 @@ PHPMD Ruleset Builder makes use of these third-party libraries:
 
 * [bootstrap-switch](https://github.com/nostalgiaz/bootstrap-switch)
 * [jQuery](https://github.com/jquery/jquery)
+* [jquery-placeholder](https://github.com/mathiasbynens/jquery-placeholder)
 * [Twitter Bootstrap](http://twitter.github.com/bootstrap/)

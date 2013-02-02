@@ -109,15 +109,19 @@ function outputXmlDocument()
 }
 
 /**
- * call outputXmlDocument whenever an input is changed
+ * document load function
  */
 ( function() {
-    // name and description text inputs
-    $( 'input[type="text"], textarea[name="description"]' ).blur( outputXmlDocument );
-    // checkboxes
+    $( 'input[type="text"], textarea[name="description"]' )
+            .blur( outputXmlDocument ) // call outputXmlDocument whenever an input is changed
+            .placeholder();            // support placeholder in older browsers
+
+    // checkbox changed
     $( 'input:checkbox' ).change( outputXmlDocument );
+
     // handle first time page load
     outputXmlDocument();
+
     // reset the scrolling position otherwise the navmenu can get messed up
     if ( location.hash ) {
         var scrollY = window.scrollY;
