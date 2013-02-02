@@ -1,6 +1,15 @@
 <?php
 
 /**
+ * @param string $asset
+ * @return string
+ */
+function asset_url( $asset )
+{
+    return rtrim( ASSETS_URL, '/' ) . '/' . ltrim( $asset, '/' );
+}
+
+/**
  * Automatically detect the PHPMD rulesets path
  * @return string The path if it's found or else FALSE
  */

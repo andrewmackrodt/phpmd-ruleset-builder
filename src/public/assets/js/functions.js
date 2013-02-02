@@ -1,4 +1,34 @@
 /**
+ * @param {string} selector
+ * @param {function} callback
+ * @param {string} filename
+ * @returns {jQuery}
+ */
+function createDownloadButton( selector, callback, filename )
+{
+    return $( selector )
+        .downloadify( {
+            'append': true,
+            'data': callback,
+            'downloadImage': BASE_URL + '/assets/img/downloadify_blank.gif',
+            'filename': filename,
+            'height': 128,
+            'swf': BASE_URL + '/assets/swf/downloadify.swf',
+            'transparent': true,
+            'width': 512
+        } )
+        .click( function() {
+            if ( $( this ).find( 'span[id^="downloadify_"]' ).length == 0 ) {
+                // flash is installed and will handle the save action
+                return;
+            }
+            // force the download using browser data uri support
+            var content = callback();
+            location.href = 'data:application/octet-stream;filename=' + filename + ',' + encodeURIComponent( content );
+        } );
+}
+
+/**
  * @param {string?} name
  * @param {string?} description
  * @param {{}} rules
@@ -105,7 +135,7 @@ function getRules()
  */
 function outputXmlDocument()
 {
-    $( '#phpmd' ).text( createXmlDocument() );
+    $( '#phpmd' ).find( 'pre' ).text( createXmlDocument() );
 }
 
 /**
@@ -118,6 +148,11 @@ function outputXmlDocument()
 
     // checkbox changed
     $( 'input:checkbox' ).change( outputXmlDocument );
+
+    // save the generated phpmd.xml file
+    createDownloadButton( '#save', function () {
+        return $( '#phpmd' ).find( 'pre' ).text();
+    }, 'phpmd.xml' );
 
     // handle first time page load
     outputXmlDocument();

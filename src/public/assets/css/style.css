@@ -18,10 +18,28 @@
     margin-bottom: 10px;
 }
 
+#save{
+    margin-bottom: 10px;
+    padding: 0 !important;
+}
+
 .control-group .controls .control-group:first-child {
     margin-top: 10px;
 }
 
 .control-group .controls .control-group:last-child {
     margin-bottom: 0;
+}
+
+.downloadify {
+    position: relative;
+}
+
+.downloadify object {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
 }
