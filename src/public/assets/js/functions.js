@@ -6,16 +6,17 @@
  */
 function createDownloadButton( selector, callback, filename )
 {
-    return $( selector )
-        .downloadify( {
+    var el = $( selector );
+    return el.downloadify( {
             'append': true,
             'data': callback,
-            'downloadImage': BASE_URL + '/assets/img/downloadify_blank.gif',
+            'downloadImage': null,
             'filename': filename,
-            'height': 128,
+            'height': el.height(),
+            'inline': true,
             'swf': BASE_URL + '/assets/swf/downloadify.swf',
             'transparent': true,
-            'width': 512
+            'width': el.width()
         } )
         .click( function() {
             if ( $( this ).find( 'span[id^="downloadify_"]' ).length == 0 ) {
