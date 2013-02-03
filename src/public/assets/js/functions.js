@@ -1,31 +1,68 @@
 /**
  * @param {string} selector
  * @param {function} callback
- * @param {string} filename
+ * @param {string?} filename
+ * @param {string?} mime
  * @returns {jQuery}
  */
-function createDownloadButton( selector, callback, filename )
+function createDownloadButton( selector, callback, filename, mime )
 {
+    if ( typeof filename == 'undefined' || !filename ) {
+        filename = 'download';
+    }
+
+    if ( typeof mime == 'undefined' || !mime ) {
+        mime = 'application/xml';
+    }
+
+    /**
+     * @returns {string}
+     */
+    var getDataUri = function() {
+        return 'data:' + mime + ';filename=' + filename + ',' + encodeURIComponent( callback() );
+    };
+
+    /**
+     * @param {element} el
+     * @returns {boolean}
+     */
+    var isDownloadifyEnabled = function( el ) {
+        return $( el ).find( 'object[id^="downloadify_"]' ).length > 0;
+    };
+
     var el = $( selector );
-    return el.downloadify( {
+    return el
+        .downloadify( {
             'append': true,
             'data': callback,
             'downloadImage': null,
             'filename': filename,
             'height': el.height(),
-            'inline': true,
             'swf': BASE_URL + '/assets/swf/downloadify.swf',
             'transparent': true,
             'width': el.width()
         } )
-        .click( function() {
-            if ( $( this ).find( 'span[id^="downloadify_"]' ).length == 0 ) {
-                // flash is installed and will handle the save action
-                return;
+        .each( function() {
+            if ( this.nodeName.toLowerCase() == 'a' ) {
+                // links are handled differently to other elements
+                $( this ).attr( 'download', filename )
+                    .click( function() {
+                        // prevent the page from loading if downloadify is enabled
+                        return !isDownloadifyEnabled( this );
+                    } )
+                    .hover( function() {
+                        $( this ).attr( 'href', getDataUri() );
+                    } );
+            } else {
+                $( this ).click( function() {
+                    if ( isDownloadifyEnabled( this ) ) {
+                        // abort as downloadify will handle the save action
+                        return false;
+                    }
+                    window.open( getDataUri() );
+                    return true;
+                } );
             }
-            // force the download using browser data uri support
-            var content = callback();
-            location.href = 'data:application/octet-stream;filename=' + filename + ',' + encodeURIComponent( content );
         } );
 }
 
@@ -151,9 +188,9 @@ function outputXmlDocument()
     $( 'input:checkbox' ).change( outputXmlDocument );
 
     // save the generated phpmd.xml file
-    createDownloadButton( '#save', function () {
+    createDownloadButton( '.downloadify', function () {
         return $( '#phpmd' ).find( 'pre' ).text();
-    }, 'phpmd.xml' );
+    }, 'phpmd.xml', 'application/xml' );
 
     // handle first time page load
     outputXmlDocument();
