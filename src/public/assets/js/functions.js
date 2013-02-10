@@ -19,7 +19,18 @@ function createDownloadButton( selector, callback, filename, mime )
      * @returns {string}
      */
     var getDataUri = function() {
-        return 'data:' + mime + ';filename=' + filename + ',' + encodeURIComponent( callback() );
+
+        var uri  = 'data:' + mime + ';content-disposition=attachment;filename=' + filename;
+        var data = callback();
+
+        if ( typeof window.btoa == 'function' ) {
+            uri += ';base64';
+            data = window.btoa( data );
+        } else {
+            data = encodeURIComponent( data );
+        }
+
+        return uri + ',' + data;
     };
 
     /**
@@ -134,16 +145,18 @@ function createXmlDocument( name, description, rules )
             delete rules[ref].priority;
         }
 
-        // the rule has properties
-        buffer.push( '\n        <properties>' );
+        if ( !$.isEmptyObject( rules[ref] ) ) {
+            // the rule has properties
+            buffer.push( '\n        <properties>' );
 
-        for ( var property in rules[ref] ) {
-            buffer.push( '\n            <property name="'
-                    + property + '" value="'
-                    + rules[ref][property] + '" />' );
+            for ( var property in rules[ref] ) {
+                buffer.push( '\n            <property name="' + property + '" value="' + rules[ref][property] + '" />' );
+            }
+
+            buffer.push( '\n        </properties>' );
         }
 
-        buffer.push( '\n        </properties>\n    </rule>' );
+        buffer.push( '\n    </rule>' );
     }
 
     // close the document
