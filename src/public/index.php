@@ -24,16 +24,14 @@ $parents = rtrim( substr( $server( 'SCRIPT_NAME' ), 0, -strlen( $filename ) ), '
 //}
 
 $requestUri = rtrim( $server( 'REQUEST_URI' ), '/' );
-$requestUri = substr( $requestUri, strlen( $parents ) );
+$requestUri = substr( $requestUri, strlen( $parents ) ) ?: '/';
 
 $translated = false;
 
 // adjust the request uri PATH_INFO, i.e. $_SERVER['SCRIPT_NAME'] != $_SERVER['PHP_SELF']
 if ( strpos( $requestUri, "/{$filename}/" ) === 0 ) {
-    $requestUri = substr( $requestUri, strlen( $filename ) + 1 ) ?: '';
-    if ( $requestUri ) {
-        $translated = true;
-    }
+    $requestUri = substr( $requestUri, strlen( $filename ) + 1 );
+    $translated = true;
 }
 
 define( 'BASE_PATH'   , realpath( __DIR__ . '/../..' ) );
@@ -50,6 +48,10 @@ require_once PRIVATE_PATH . '/functions.php';
 
 if ( $requestUri == '/cache.manifest' ) {
     send_cache_manifest();
+    return;
+} else if ( !preg_match( '#^/(?:index\.php)?$#', $requestUri ) ) {
+    header( 'HTTP/1.1 404 Not Found' );
+    echo 'File Not Found';
     return;
 }
 

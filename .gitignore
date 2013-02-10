@@ -1,4 +1,5 @@
 # Project
+conf/head.ini
 conf/settings.php
 .htaccess
 

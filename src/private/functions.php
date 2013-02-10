@@ -198,9 +198,13 @@ function send_cache_manifest()
         $v = substr( $v, strlen( PUBLIC_PATH ) + 1 );
     } );
 
-    // TODO store the source modified time in a file part of a post-merge hook
-    chdir( BASE_PATH );
-    $modified = strtotime( `git log --pretty=format:"%ad" -1` );
+    if ( file_exists( CONFIG_PATH . '/head.ini' ) ) {
+        $deployment = parse_ini_file( CONFIG_PATH . '/head.ini' );
+        $modified = $deployment['timestamp'];
+    } else {
+        chdir( BASE_PATH );
+        $modified = strtotime( `git log --pretty=format:"%ad" -1` );
+    }
 
     array_unshift( $manifest, '# Modified ' . date( DATE_ISO8601, $modified ) );
     array_unshift( $manifest, 'CACHE MANIFEST' );
