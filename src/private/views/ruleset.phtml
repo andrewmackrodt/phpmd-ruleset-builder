@@ -29,19 +29,32 @@
                 <textarea class="span5" name="description" placeholder="A short description describing the ruleset"></textarea>
             </div>
         </div>
+        <div class="control-group">
+            <div class="control-label">
+                <div class="switch switch-medium">
+                    <input name="advanced" type="checkbox" />
+                </div>
+            </div>
+            <div class="controls">
+                <p>
+                    <strong>Advanced Settings</strong>
+                    Allows changing the reporting priority and configurable options of rules.
+                </p>
+            </div>
+        </div>
     </fieldset>
 
     <? foreach ( get_rulesets() as $filename => $ruleset ): ?>
         <? $id = substr( $filename, 0, -4 ); ?>
         <? $navbar[$id] = $ruleset['name']; ?>
-        <fieldset id="<?= $id; ?>">
+        <fieldset id="<?= $id; ?>" class="ruleset">
             <legend><?= $ruleset['name']; ?></legend>
             <p><?= $ruleset['description']; ?></p>
             <? foreach ( $ruleset['rules'] as $rule ): ?>
-                <div class="control-group">
+                <div class="control-group rule">
                     <div class="control-label">
                         <div class="switch switch-medium">
-                            <input name="<?= $rule['id']; ?>" type="checkbox" checked="checked" />
+                            <input name="<?= $rule['id']; ?>[enabled]" type="checkbox" checked="checked" />
                         </div>
                     </div>
                     <div class="controls">
@@ -51,14 +64,22 @@
                                 <?= $rule['description']; ?>
                             </p>
                         </div>
-                        <fieldset>
+                        <fieldset class="options">
+                            <div class="control-group priority">
+                                <select name="<?= $rule['id']; ?>[priority]" data-default="<?= $rule['priority']; ?>">
+                                    <? foreach( array( 'highest', 'high', 'normal', 'low', 'lowest' ) as $v => $k ): ?>
+                                        <? $selected = ++$v == $rule['priority'] ? ' selected="selected"' : ''; ?>
+                                        <option value="<?= $v; ?>"<?= $selected; ?>><?= $k; ?></option>
+                                    <? endforeach; ?>
+                                </select>
+                            </div>
                             <? foreach ( $rule['properties'] as $name => $property ): ?>
-                                <div class="control-group">
+                                <div class="control-group property">
                                     <p>
                                         <strong><?= $property['name']; ?></strong>
                                         <?= $property['description']; ?>
                                     </p>
-                                    <input name="<?= $name; ?>" placeholder="<?= $property['value']; ?>" type="text" />
+                                    <input name="<?= "{$rule['id']}[$name]"; ?>" placeholder="<?= $property['value']; ?>" type="text" />
                                 </div>
                             <? endforeach; ?>
                         </fieldset>

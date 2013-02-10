@@ -22,12 +22,9 @@
     padding: 0 !important;
 }
 
-.control-group .controls .control-group:first-child {
-    margin-top: 10px;
-}
-
-.control-group .controls .control-group:last-child {
+.controls fieldset legend {
     margin-bottom: 0;
+    padding-top: 10px;
 }
 
 .downloadify {

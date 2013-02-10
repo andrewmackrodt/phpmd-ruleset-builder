@@ -113,18 +113,29 @@ function createXmlDocument( name, description, rules )
     buffer.push( '>' );
     buffer.push( '\n    <description>' + description + '</description>' );
 
+    // are advanced settings enabled
+    var advanced = $( 'input[name="advanced"]' ).is( ':checked' );
+
     // append the rules to the string buffer
     for ( var ref in rules ) {
         buffer.push( '\n    <rule ref="' + ref + '"' );
 
         // the rule has no properties
-        if ( $.isEmptyObject( rules[ref] ) ) {
+        if ( !advanced || $.isEmptyObject( rules[ref] ) ) {
             buffer.push( ' />' );
             continue;
         }
 
+        buffer.push( '>' );
+
+        // the rule has a custom priority
+        if ( rules[ref].priority ) {
+            buffer.push( '\n        <priority>' + rules[ref].priority + '</priority>' );
+            delete rules[ref].priority;
+        }
+
         // the rule has properties
-        buffer.push( '>\n        <properties>' );
+        buffer.push( '\n        <properties>' );
 
         for ( var property in rules[ref] ) {
             buffer.push( '\n            <property name="'
@@ -149,20 +160,32 @@ function getRules()
 {
     var rules = {};
 
-    $( 'input[type="checkbox"]:checked' ).each( function() {
+    $( '.rule input[type="checkbox"]:checked' ).each( function() {
         var rule = {};
 
-        $( this ).parents( 'div.control-group' ).find( 'input[type="text"]' ).each( function() {
+        var parents = $( this ).parents( 'div.control-group' );
+
+        var $priority       = parents.find( 'select[name*="priority"]' );
+        var defaultPriority = $priority.attr( 'data-default' );
+        var priority        = $priority.val();
+
+        if ( priority != defaultPriority ) {
+            rule['priority'] = priority;
+        }
+
+        parents.find( 'input[type="text"]' ).each( function() {
             var $input      = $( this );
             var placeholder = $input.attr( 'placeholder' );
             var value       = $.trim( $input.val() ) || placeholder;
 
             if ( value != placeholder ) {
-                rule[this.name] = value;
+                var property = this.name.replace( /^.+\[(.+)\]$/, '$1' );
+                rule[property] = value;
             }
         } );
 
-        rules[this.name] = rule;
+        var name = this.name.replace( /^([^[]+).+$/, '$1' );
+        rules[name] = rule;
     } );
 
     return rules;
@@ -180,12 +203,23 @@ function outputXmlDocument()
  * document load function
  */
 ( function() {
-    $( 'input[type="text"], textarea[name="description"]' )
+    $( 'input[type="text"], textarea[name="description"], .rule select[name*="priority"]' )
             .blur( outputXmlDocument ) // call outputXmlDocument whenever an input is changed
             .placeholder();            // support placeholder in older browsers
 
     // checkbox changed
     $( 'input:checkbox' ).change( outputXmlDocument );
+
+    // show or hide advanced settings
+    var toggleAdvancedMode = function() {
+        if ( $( this ).is( ':checked' ) ) {
+            $( 'form .priority, form .options' ).fadeIn();
+        } else {
+            $( 'form .priority, form .options' ).fadeOut();
+        }
+    };
+
+    $( 'input[name="advanced"]' ).change( toggleAdvancedMode ).each( toggleAdvancedMode );
 
     // save the generated phpmd.xml file
     createDownloadButton( '.downloadify', function () {

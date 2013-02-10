@@ -198,8 +198,12 @@ function send_cache_manifest()
         $v = substr( $v, strlen( PUBLIC_PATH ) + 1 );
     } );
 
+    // TODO store the source modified time in a file part of a post-merge hook
+    chdir( BASE_PATH );
+    $modified = strtotime( `git log --pretty=format:"%ad" -1` );
+
+    array_unshift( $manifest, '# Modified ' . date( DATE_ISO8601, $modified ) );
     array_unshift( $manifest, 'CACHE MANIFEST' );
-    array_unshift( $manifest, '# Cache Manifest ' . date( DATE_ISO8601 ) );
     $manifest[] = 'http://ajmm.org/wp-includes/images/favicon/bitbucket.png';
     $manifest[] = 'FALLBACK:';
     $manifest[] = 'index.php .';

@@ -10,5 +10,8 @@ error_reporting( E_ALL | E_STRICT );
 ini_set( 'display_errors', 1 );
 ini_set( 'html_errors', 1 );
 
+// allow usage of CACHE MANIFEST
+define( 'CACHE_MANIFEST', false );
+
 // PHPMD rulesets directory 
 define( 'RULESETS_DIR', '/usr/share/pear-data/PHP_PMD/resources/rulesets' );
