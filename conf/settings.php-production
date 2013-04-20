@@ -13,5 +13,14 @@ ini_set( 'html_errors', 0 );
 // allow usage of CACHE MANIFEST
 define( 'CACHE_MANIFEST', true );
 
-// PHPMD rulesets directory 
-define( 'RULESETS_DIR', '/usr/share/pear-data/PHP_PMD/resources/rulesets' );
+// allow gzip compression of css and javascript files
+define( 'COMPRESS_ASSETS', true );
+
+// path to minify http://code.google.com/p/minify/
+define( 'JSMIN_PATH', '/usr/local/share/minify/min/lib' );
+
+// enable the use of minify for css and js files (requires COMPRESS_ASSETS = true and JSMIN_PATH to exist)
+define( 'MINIFY_ASSETS', true );
+
+// PHPMD rulesets directory
+define( 'RULESETS_PATH', '/usr/share/pear-data/PHP_PMD/resources/rulesets' );

@@ -5,3 +5,16 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule .* index.php [L]
 </IfModule>
+
+# Support for pre-compressed css and js files
+SetEnvIfNoCase Request_URI "\.gz" no-gzip dont-vary
+
+<Files *.js.gz>
+  AddEncoding gzip .js
+  ForceType application/x-javascript
+</Files>
+
+<Files *.css.gz>
+  AddEncoding gzip .css
+  ForceType text/css
+</Files>

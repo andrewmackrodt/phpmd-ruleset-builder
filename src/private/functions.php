@@ -1,19 +1,86 @@
 <?php
-
 /**
  * @param string $asset
  * @return string
  */
 function asset_url( $asset )
 {
-    return rtrim( ASSETS_URL, '/' ) . '/' . ltrim( $asset, '/' );
+    $asset    = ltrim( $asset, '/' );
+    $srcpath  = ASSETS_PATH . "/{$asset}";
+    $pathinfo = pathinfo( $asset );
+
+    #region [converting a number base 10 to base 62 (a-zA-Z0-9)](http://stackoverflow.com/a/4964352/650329)
+
+    $base = '0123456789abcdefghijklmnopqrstuvwxyz';
+    $b = strlen( $base );
+    $num = filemtime( $srcpath );
+    $r = $num % $b;
+    $mtime = $base[$r];
+    $q = floor( $num / $b );
+
+    while ( $q ) {
+        $r = $q % $b;
+        $q = floor( $q / $b );
+        $mtime = $base[$r] . $mtime;
+    }
+
+    #endregion
+
+    $gzip = COMPRESS_ASSETS
+            && isset( $_SERVER['HTTP_ACCEPT_ENCODING'] )
+            && strpos( $_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip' ) !== false
+            && in_array( strtolower( $pathinfo['extension'] ), array( 'css', 'js' ) );
+
+    // use compressed assets if the server configuration and client allow gzip encoding
+    if ( $gzip ) {
+        $filename = $pathinfo['filename'];
+        if ( substr( $filename, -4 ) == '.min' ) {
+            $filename = substr( $filename, 0, -4 );
+            $asset = "{$pathinfo['dirname']}/{$filename}.{$mtime}.min.{$pathinfo['extension']}.gz";
+            $minified = true;
+        } else {
+            $asset = "{$pathinfo['dirname']}/{$filename}.{$mtime}.{$pathinfo['extension']}.gz";
+            $minified = false;
+        }
+
+        $destpath = ASSETS_PATH . "/{$asset}";
+
+        if ( !file_exists( $destpath ) ) {
+            if ( !is_dir( dirname( $destpath ) ) ) {
+                mkdir( dirname( $destpath ), 0775, true );
+            }
+            $hnd = fopen( $destpath, 'ab+' );
+            flock( $hnd, LOCK_EX );
+            clearstatcache( true, $destpath );
+            if ( filesize( $destpath ) === 0 ) {
+                $contents = file_get_contents( $srcpath );
+                if ( !$minified && MINIFY_ASSETS ) {
+                    if ( file_exists( JSMIN_PATH . '/JSMin.php' ) ) {
+                        require_once JSMIN_PATH . '/JSMin.php';
+                        $contents = JSMin::minify( $contents );
+                        $contents = str_replace( "\n", '', $contents );
+                    } else {
+                        trigger_error( 'JSMIN_PATH is invalid', E_USER_WARNING );
+                    }
+                }
+                $contents = gzencode( $contents, 9 );
+                fwrite( $hnd, $contents );
+            }
+            flock( $hnd, LOCK_UN );
+            fclose( $hnd );
+        }
+    } else {
+        $asset .= "?v={$mtime}";
+    }
+
+    return rtrim( ASSETS_URL, '/' ) . "/{$asset}";
 }
 
 /**
  * Automatically detect the PHPMD rulesets path
  * @return string The path if it's found or else FALSE
  */
-function autodetect_rulesets_dir()
+function autodetect_rulesets_path()
 {
     foreach ( explode( PATH_SEPARATOR, get_include_path() ) as $path ) {
         $ruleSetFactory = "{$path}/PHP/PMD/RuleSetFactory.php";
@@ -53,7 +120,7 @@ function escape( $value, $recursive = true )
     // input is an array
     foreach( $value as $k => $v ) {
         if ( is_array( $v ) ) {
-            // recursively escape the error if true
+            // recursively escape the array if true
             if ( $recursive ) {
                 $v = escape( $v );
             }
@@ -99,12 +166,12 @@ function get_rulesets()
         return $cache['rulesets'];
     }
 
-    $rulesdir = RULESETS_DIR;
+    $rulesdir = RULESETS_PATH;
 
     if ( !( is_dir( $rulesdir ) && is_readable( $rulesdir ) ) ) {
-        trigger_error( 'RULESETS_DIR not found', E_USER_WARNING );
+        trigger_error( 'RULESETS_PATH not found', E_USER_WARNING );
         // try auto detecting the rulesets path
-        if ( !( $rulesdir = autodetect_rulesets_dir() ) ) {
+        if ( !( $rulesdir = autodetect_rulesets_path() ) ) {
             // failed - return an empty result set
             return array();
         }
@@ -169,6 +236,9 @@ function get_rulesets()
     return $cache['rulesets'];
 };
 
+/**
+ * @return void
+ */
 function send_cache_manifest()
 {
     header( 'Content-Type: text/cache-manifest' );
@@ -213,5 +283,43 @@ function send_cache_manifest()
     $manifest[] = 'index.php .';
 
     echo implode( "\n", $manifest );
+}
+
+/**
+ * @return void
+ */
+function unlink_expired_assets()
+{
+    $itr = new RecursiveDirectoryIterator( ASSETS_PATH );
+    $itr = new RecursiveIteratorIterator( $itr );
+
+    foreach ( $itr as $path => $splFileInfo ) {
+        /** @var $splFileInfo SplFileInfo */
+        if ( !preg_match( '#^(.+?)\.([a-z0-9]+)(\.min)?\.(css|js)\.gz$#i', $splFileInfo->getFilename(), $match ) ) {
+            continue;
+        }
+
+        $folder = str_replace( '\\', '/', dirname( substr( $path, strlen( ASSETS_PATH ) + 1 ) ) );
+        $asset =  $folder. "/{$match[1]}{$match[3]}.{$match[4]}";
+
+        #region [converting a number base 10 to base 62 (a-zA-Z0-9)](http://stackoverflow.com/a/4964352/650329)
+
+        $base = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $b = strlen( $base );
+        $num = $match[2];
+        $limit = strlen( $num );
+        $mtime = strpos( $base, $num[0] );
+
+        for ( $i = 1; $i < $limit; $i++ ) {
+            $mtime = $b * $mtime + strpos( $base, $num[$i] );
+        }
+
+        #endregion
+
+        if ( filemtime( ASSETS_PATH . "/{$asset}" ) != $mtime ) {
+            // delete the expired cache file
+            unlink( $path );
+        }
+    }
 }
 //EOF functions.php

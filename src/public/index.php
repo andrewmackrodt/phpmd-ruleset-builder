@@ -35,10 +35,11 @@ if ( strpos( $requestUri, "/{$filename}/" ) === 0 ) {
 }
 
 define( 'BASE_PATH'   , realpath( __DIR__ . '/../..' ) );
-define( 'CONFIG_PATH' , BASE_PATH . '/conf' );
-define( 'SRC_PATH'    , BASE_PATH . '/src' );
-define( 'PRIVATE_PATH', SRC_PATH . '/private' );
-define( 'PUBLIC_PATH' , SRC_PATH . '/public' );
+define( 'CONFIG_PATH' , BASE_PATH . DIRECTORY_SEPARATOR . 'conf' );
+define( 'SRC_PATH'    , BASE_PATH . DIRECTORY_SEPARATOR . 'src' );
+define( 'PRIVATE_PATH', SRC_PATH . DIRECTORY_SEPARATOR . 'private' );
+define( 'PUBLIC_PATH' , SRC_PATH . DIRECTORY_SEPARATOR . 'public' );
+define( 'ASSETS_PATH' , PUBLIC_PATH . DIRECTORY_SEPARATOR . 'assets' );
 
 define( 'BASE_URL'    , "{$scheme}://{$host}{$parents}" );
 define( 'ASSETS_URL'  , BASE_URL . '/assets' );
@@ -49,7 +50,7 @@ require_once PRIVATE_PATH . '/functions.php';
 if ( $requestUri == '/cache.manifest' ) {
     send_cache_manifest();
     return;
-} else if ( !preg_match( '#^/(?:index\.php)?$#', $requestUri ) ) {
+} else if ( !preg_match( '#^/(?:index\.php)?(?:\?.*)?$#', $requestUri ) ) {
     header( 'HTTP/1.1 404 Not Found' );
     echo 'File Not Found';
     return;
