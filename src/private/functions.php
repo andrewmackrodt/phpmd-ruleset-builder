@@ -1,9 +1,10 @@
 <?php
 /**
  * @param string $asset
+ * @param bool   $absolute
  * @return string
  */
-function asset_url( $asset )
+function asset_url( $asset, $absolute = true )
 {
     $asset    = ltrim( $asset, '/' );
     $srcpath  = ASSETS_PATH . "/{$asset}";
@@ -73,7 +74,9 @@ function asset_url( $asset )
         $asset .= "?v={$mtime}";
     }
 
-    return rtrim( ASSETS_URL, '/' ) . "/{$asset}";
+    return $absolute
+            ? rtrim( ASSETS_URL, '/' ) . "/{$asset}"
+            : $asset;
 }
 
 /**
@@ -243,30 +246,34 @@ function send_cache_manifest()
 {
     header( 'Content-Type: text/cache-manifest' );
 
-    $scandir = function( $dir ) use ( &$scandir ) {
-        $files = array();
+    $manifest = array( 'CACHE MANIFEST', '' );
+
+    $scandir = function( $dir ) use ( &$scandir, &$manifest ) {
         foreach ( scandir( $dir ) as $file ) {
             if ( $file[0] == '.' ) {
                 continue;
             }
             $file = "{$dir}/{$file}";
             if ( is_dir( $file ) ) {
-                $files = array_merge( $files, $scandir( $file ) );
+                $scandir( $file );
             } else {
-                if ( preg_match( '/\.(css|gif|js|png|swf)$/i', $file ) ) {
-                    // only add the file if it has an allowed file extension
-                    $files[] = $file;
+                // only add the file if it has an allowed file extension
+                if ( !preg_match( '/\.(css|gif|js|png|swf)$/i', $file ) ) {
+                    continue;
                 }
+                // process the file through asset_url so we can use the gzip version
+                $asset = substr( $file, strlen( ASSETS_PATH ) + 1 );
+                $asset = asset_url( $asset, false );
+                if ( strpos( $asset, 'img/glyphicons' ) !== false
+                        || strpos( $asset, '.swf' ) !== false ) {
+                    $asset = substr( $asset, 0, strpos( $asset, '?' ) );
+                }
+                $manifest[] = "assets/{$asset}";
             }
         }
-        return $files;
     };
 
-    $manifest = $scandir( PUBLIC_PATH );
-
-    array_walk( $manifest, function( &$v ) {
-        $v = substr( $v, strlen( PUBLIC_PATH ) + 1 );
-    } );
+    $scandir( ASSETS_PATH );
 
     if ( file_exists( CONFIG_PATH . '/head.ini' ) ) {
         $deployment = parse_ini_file( CONFIG_PATH . '/head.ini' );
@@ -276,9 +283,7 @@ function send_cache_manifest()
         $modified = strtotime( `git log --pretty=format:"%ad" -1` );
     }
 
-    array_unshift( $manifest, '# Modified ' . date( DATE_ISO8601, $modified ) );
-    array_unshift( $manifest, 'CACHE MANIFEST' );
-    $manifest[] = 'http://ajmm.org/wp-includes/images/favicon/bitbucket.png';
+    $manifest[1] = '# Modified ' . date( DATE_ISO8601, $modified );
     $manifest[] = 'FALLBACK:';
     $manifest[] = 'index.php .';
 

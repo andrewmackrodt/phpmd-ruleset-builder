@@ -1,6 +1,6 @@
 <?php
 // begin output buffering
-ob_start();
+ob_start( 'ob_gzhandler' );
 
 /**
  * @param string $key     The array key
