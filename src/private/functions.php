@@ -109,6 +109,22 @@ function autodetect_rulesets_path()
 }
 
 /**
+ * Automatically detect the PHPCS path
+ * @return string The path if it's found or else FALSE
+ */
+function autodetect_phpcs_path()
+{
+    foreach ( explode( PATH_SEPARATOR, get_include_path() ) as $path ) {
+        $path = realpath( "{$path}/PHP/CodeSniffer.php" );
+        if ( $path ) {
+            return $path;
+        }
+    }
+
+    return false;
+}
+
+/**
  * @param mixed $value
  * @param bool  $recursive
  * @return mixed
@@ -169,15 +185,11 @@ function get_rulesets()
         return $cache['rulesets'];
     }
 
-    $rulesdir = RULESETS_PATH;
+    $rulesdir = realpath( RULESETS_PATH ) ?: autodetect_rulesets_path();
 
-    if ( !( is_dir( $rulesdir ) && is_readable( $rulesdir ) ) ) {
-        trigger_error( 'RULESETS_PATH not found', E_USER_WARNING );
-        // try auto detecting the rulesets path
-        if ( !( $rulesdir = autodetect_rulesets_path() ) ) {
-            // failed - return an empty result set
-            return array();
-        }
+    if ( !is_dir( $rulesdir ) ) {
+        trigger_error( 'PHPMD rulesets not found', E_USER_WARNING );
+        return array();
     }
 
     // suppress errors when using libxml
@@ -238,6 +250,94 @@ function get_rulesets()
     $cache['rulesets'] = escape( $rulesets );
     return $cache['rulesets'];
 };
+
+/**
+ * @return array
+ */
+function get_standards()
+{
+    global $cache;
+
+    if ( isset( $cache['standards'] )) {
+        return $cache['standards'];
+    }
+
+    $phpcsPath = realpath( PHPCS_PATH . '/CodeSniffer.php' ) ?: autodetect_phpcs_path();
+    $standardsPath = realpath( dirname( $phpcsPath ) . '/CodeSniffer/Standards' );
+
+    if ( !( is_file( $phpcsPath ) && is_dir( $standardsPath ) ) ) {
+        trigger_error( 'PHP CodeSniffer not found', E_USER_WARNING );
+        return array();
+    }
+
+    // return array
+    $standards = array();
+
+    /** @noinspection PhpIncludeInspection */
+    require_once $phpcsPath;
+    $codeSniffer = new PHP_CodeSniffer();
+    $sniffs = $codeSniffer->getSniffFiles( $standardsPath );
+
+    $fnExtractDescription = function( $docComment, &$var = null ) {
+        $description = preg_replace( '/^ *\* */m', '', str_replace( "\t", ' ', $docComment ) );
+        $description = explode( "\n", str_replace( "\r", '', $description ) );
+        $description = array_filter( $description, function( $line ) use ( &$var ) {
+            if ( $line ) {
+                if ( substr_compare( $line, '@var', 0, 4 ) === 0 ) {
+                    $var = trim( substr( $line, 4 ) );
+                    return false;
+                } else {
+                    return $line[0] != '@' && $line[0] != '/';
+                }
+            }
+            return false;
+        } );
+        $description = trim( preg_replace( '/ {2,}/', ' ', strip_tags( implode( ' ', $description ) ) ) );
+        return $description;
+    };
+
+    foreach ( $sniffs as $sniff ) {
+        $class = str_replace( '\\', '_', substr( $sniff, strlen( $standardsPath ) + 1, -4 ) );
+        $name = str_replace( '_', '.', $class );
+
+        if ( $off = strpos( $class, '_' ) ) {
+            $standardName = substr( $class, 0, $off );
+        } else {
+            continue;
+        }
+
+        $class = new ReflectionClass( $class );
+
+        // get the description for the sniff
+        $description = $fnExtractDescription( $class->getDocComment() );
+        $description = preg_replace( '/^([a-z0-9]+_)+[a-z0-9]+\. /i', '', $description );
+
+        // append the parsed standard
+        $standard = array(
+                'description' => $description,
+                'properties'  => array()
+            );
+
+        $instance = $class->newInstance();
+
+        foreach ( $class->getProperties( ReflectionProperty::IS_PUBLIC ) as $property ) {
+            $description = $fnExtractDescription( $property->getDocComment(), $var );
+            $value = $property->getValue( $instance );
+            if ( $var != 'array' && !is_array( $value ) ) {
+                $standard['properties'][$property->getName()] = array(
+                        'description' => $description,
+                        'type'        => $var,
+                        'value'       => $value
+                    );
+            }
+        }
+
+        $standards[$standardName][$name] = $standard;
+    }
+
+    $cache['standards'] = escape( $standards );
+    return $cache['standards'];
+}
 
 /**
  * @return void

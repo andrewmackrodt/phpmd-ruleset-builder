@@ -22,5 +22,8 @@ define( 'JSMIN_PATH', '/usr/local/share/minify/min/lib' );
 // enable the use of minify for css and js files (requires COMPRESS_ASSETS = true and JSMIN_PATH to exist)
 define( 'MINIFY_ASSETS', true );
 
+// PHPCS directory (where CodeSniffer.php is located)
+define( 'PHPCS_PATH', '/usr/share/pear/PHP' );
+
 // PHPMD rulesets directory
 define( 'RULESETS_PATH', '/usr/share/pear-data/PHP_PMD/resources/rulesets' );
