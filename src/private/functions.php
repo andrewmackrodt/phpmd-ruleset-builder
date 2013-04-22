@@ -375,9 +375,9 @@ function send_cache_manifest()
 
     $scandir( ASSETS_PATH );
 
-    if ( file_exists( CONFIG_PATH . '/head.ini' ) ) {
-        $deployment = parse_ini_file( CONFIG_PATH . '/head.ini' );
-        $modified = $deployment['timestamp'];
+    if ( file_exists( CONFIG_PATH . '/HEAD.php' ) ) {
+        include_once CONFIG_PATH . '/HEAD.php';
+        $modified = $GLOBALS['HEAD']['timestamp'];
     } else {
         chdir( BASE_PATH );
         $modified = strtotime( `git log --pretty=format:"%ad" -1` );

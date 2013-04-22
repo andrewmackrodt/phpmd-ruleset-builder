@@ -1,5 +1,5 @@
 # Project
-conf/head.ini
+conf/HEAD.php
 conf/settings.php
 src/public/assets/*.css.gz
 src/public/assets/*.js.gz
