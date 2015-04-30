@@ -44,6 +44,12 @@ define( 'ASSETS_PATH' , PUBLIC_PATH . DIRECTORY_SEPARATOR . 'assets' );
 define( 'BASE_URL'    , "{$scheme}://{$host}{$parents}" );
 define( 'ASSETS_URL'  , BASE_URL . '/assets' );
 
+if ( file_exists( BASE_PATH . '/vendor/autoload.php' ) ) {
+    require_once BASE_PATH . '/vendor/autoload.php';
+} else {
+    trigger_error( '`composer install` required', E_USER_WARNING );
+}
+
 require_once CONFIG_PATH  . '/settings.php';
 require_once PRIVATE_PATH . '/functions.php';
 

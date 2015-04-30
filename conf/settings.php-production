@@ -26,4 +26,4 @@ define( 'MINIFY_ASSETS', true );
 define( 'PHPCS_PATH', '/usr/share/pear/PHP' );
 
 // PHPMD rulesets directory
-define( 'RULESETS_PATH', '/usr/share/pear-data/PHP_PMD/resources/rulesets' );
+define( 'RULESETS_PATH', __DIR__ . '/../vendor/phpmd/phpmd/src/main/resources/rulesets' );

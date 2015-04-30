@@ -225,10 +225,21 @@ function outputXmlDocument()
 
     // show or hide advanced settings
     var toggleAdvancedMode = function() {
+        var options = $( 'form .priority, form .options' );
+        var i = options.length;
+
         if ( $( this ).is( ':checked' ) ) {
-            $( 'form .priority, form .options' ).fadeIn();
+            options.fadeIn( 400, function () {
+                if (--i == 0) {
+                    $( 'body' ).scrollspy( 'refresh' );
+                }
+            });
         } else {
-            $( 'form .priority, form .options' ).fadeOut();
+            options.fadeOut( 400, function () {
+                if (--i == 0) {
+                    $( 'body' ).scrollspy( 'refresh' );
+                }
+            });
         }
     };
 

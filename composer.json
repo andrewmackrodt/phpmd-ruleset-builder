@@ -1,0 +1,16 @@
+{
+  "name": "andrewmackrodt/phpmd-ruleset-builder",
+  "description": "A tool to quickly create PHPMD rulesets",
+  "license": "proprietary",
+  "keywords": [
+    "phpmd",
+    "pmd.xml"
+  ],
+  "homepage": "https://bitbucket.org/andrewmackrodt/phpmd-ruleset-builder",
+  "require": {
+    "phpmd/phpmd": "~2.2"
+  },
+  "config": {
+    "bin-dir": "bin"
+  }
+}

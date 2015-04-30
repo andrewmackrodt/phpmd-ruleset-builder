@@ -85,6 +85,14 @@ function asset_url( $asset, $absolute = true )
  */
 function autodetect_rulesets_path()
 {
+    if (class_exists('\PHPMD\RuleSetFactory')) {
+        $ruleSetFactory = new \PHPMD\RuleSetFactory();
+        $ruleSets = $ruleSetFactory->listAvailableRuleSets();
+        if ( $ruleSets ) {
+            return dirname( $ruleSetFactory->createSingleRuleSet( $ruleSets[0] )->getFileName() );
+        }
+    }
+
     foreach ( explode( PATH_SEPARATOR, get_include_path() ) as $path ) {
         $ruleSetFactory = "{$path}/PHP/PMD/RuleSetFactory.php";
         $match = null;
