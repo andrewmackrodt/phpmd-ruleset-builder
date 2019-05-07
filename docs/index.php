@@ -37,7 +37,7 @@ if ( strpos( $requestUri, "/{$filename}/" ) === 0 ) {
 
 define( 'BASE_PATH'   , realpath( __DIR__ . '/..' ) );
 define( 'CONFIG_PATH' , BASE_PATH . DIRECTORY_SEPARATOR . 'config' );
-define( 'PUBLIC_PATH' , BASE_PATH . DIRECTORY_SEPARATOR . 'public' );
+define( 'PUBLIC_PATH' , BASE_PATH . DIRECTORY_SEPARATOR . 'docs' );
 define( 'VIEWS_PATH' , BASE_PATH . DIRECTORY_SEPARATOR . 'resources/views' );
 
 define( 'BASE_URL'    , "{$scheme}://{$host}{$parents}" );

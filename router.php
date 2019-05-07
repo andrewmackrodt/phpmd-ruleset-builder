@@ -81,7 +81,7 @@ if (!call_user_func(static function () {
     ];
 
     $requestPath = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
-    $publicPath = realpath( __DIR__ . '/public' );
+    $publicPath = realpath( __DIR__ . '/docs' );
     $filepath = realpath( "$publicPath/$requestPath" );
 
     if (strpos($filepath, $publicPath) !== 0) {
@@ -121,5 +121,5 @@ if (!call_user_func(static function () {
 
     return true;
 })) {
-    require __DIR__ . '/public/index.php';
+    require __DIR__ . '/docs/index.php';
 }
