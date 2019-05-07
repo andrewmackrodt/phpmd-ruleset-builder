@@ -18,6 +18,7 @@ if (!call_user_func(static function () {
         '.bz2' => 'application/x-bzip2',
         '.csh' => 'application/x-csh',
         '.css' => 'text/css',
+        '.css.map' => 'application/json',
         '.csv' => 'text/csv',
         '.doc' => 'application/msword',
         '.docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -87,21 +88,22 @@ if (!call_user_func(static function () {
         return false;
     }
 
-    $extensions = preg_match( '/(\.[a-z0-9]+)+$/i', $filepath, $match )
-        ? array_filter( explode( '.', strtolower( $match[0] ) ) )
-        : [];
+    $extension = preg_match( '/(?:\.[a-z0-9]+)+$/i', $filepath, $match )
+        ? strtolower( $match[0] )
+        : '';
 
     $contentEncoding = '';
 
-    if ( end( $extensions ) === 'gz' ) {
+    if ( substr( $extension, -3 ) === '.gz' ) {
         $contentEncoding = 'gzip';
-
-        array_pop( $extensions );
+        $extension = substr( $extension, 0, -3 );
     }
 
-    $extension = '.' . array_pop( $extensions );
+    while ( $extension && ! isset( $mimeTypes[$extension] ) ) {
+        $extension = preg_replace( '/^\.[^.]+/', '', $extension );
+    }
 
-    if ( $extension === '.' || preg_match( '/^\.php(?:s|[0-9]+)$/i', $extension ) ) {
+    if ( !$extension || preg_match( '/^\.php(?:s|[0-9]+)$/i', $extension ) ) {
         return false;
     }
 

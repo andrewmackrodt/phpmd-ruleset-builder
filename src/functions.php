@@ -6,69 +6,76 @@
  */
 function asset_url( $asset, $absolute = true )
 {
-    $asset    = ltrim( $asset, '/' );
-    $srcpath  = PUBLIC_PATH . "/{$asset}";
+    static $fnWriteFileIfNotExists;
+
+    if ( !$fnWriteFileIfNotExists ) $fnWriteFileIfNotExists = function ( $filepath, $fnGetContents ) {
+        if ( file_exists( $filepath ) ) {
+            return $filepath;
+        }
+
+        if ( ! is_dir( dirname( $filepath ) ) ) {
+            mkdir( dirname( $filepath ), 0775, true );
+        }
+
+        $hnd = fopen( $filepath, 'ab+' );
+        flock( $hnd, LOCK_EX );
+        clearstatcache( true, $filepath );
+
+        if ( filesize( $filepath ) === 0 ) {
+            fwrite( $hnd, $fnGetContents() );
+        }
+
+        flock( $hnd, LOCK_UN );
+        fclose( $hnd );
+
+        return $filepath;
+    };
+
+    $srcpath  = PUBLIC_PATH . '/' . ltrim( $asset, '/' );
+    $mtime    = filemtime( $srcpath );
     $pathinfo = pathinfo( $asset );
 
-    #region [converting a number base 10 to base 62 (a-zA-Z0-9)](http://stackoverflow.com/a/4964352/650329)
+    if ( ! in_array( $pathinfo['extension'], array( 'css', 'js' ), true ) ) {
+        $asset .= "?_={$mtime}";
 
-    $base = '0123456789abcdefghijklmnopqrstuvwxyz';
-    $b = strlen( $base );
-    $num = filemtime( $srcpath );
-    $r = $num % $b;
-    $mtime = $base[$r];
-    $q = floor( $num / $b );
-
-    while ( $q ) {
-        $r = $q % $b;
-        $q = floor( $q / $b );
-        $mtime = $base[$r] . $mtime;
+        return $absolute
+            ? rtrim( BASE_URL, '/' ) . "/{$asset}"
+            : $asset;
     }
 
-    #endregion
+    $pathinfo['filename'] = preg_replace( '/\.min$/i', '', $pathinfo['filename'] );
+
+    $minified = (bool)preg_match( '/\.min$/i', $pathinfo['filename'] );
+
+    if ( !$minified && MINIFY_ASSETS ) {
+        $asset = "{$pathinfo['dirname']}/{$pathinfo['filename']}.min.{$pathinfo['extension']}";
+        $destpath = PUBLIC_PATH . "/$asset";
+
+        $fnWriteFileIfNotExists( $destpath, function () use ( $srcpath ) {
+            $minify = new Minify( new Minify_Cache_Null );
+
+            return $minify->combine( [$srcpath] );
+        } );
+    }
 
     $gzip = COMPRESS_ASSETS
-            && isset( $_SERVER['HTTP_ACCEPT_ENCODING'] )
-            && strpos( $_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip' ) !== false
-            && in_array( strtolower( $pathinfo['extension'] ), array( 'css', 'js' ) );
+        && isset( $_SERVER['HTTP_ACCEPT_ENCODING'] )
+        && strpos( $_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip' ) !== false
+        && in_array( strtolower( $pathinfo['extension'] ), array( 'css', 'js' ) );
 
     // use compressed assets if the server configuration and client allow gzip encoding
     if ( $gzip ) {
-        $filename = $pathinfo['filename'];
-        if ( substr( $filename, -4 ) == '.min' ) {
-            $filename = substr( $filename, 0, -4 );
-            $asset = "{$pathinfo['dirname']}/{$filename}.{$mtime}.min.{$pathinfo['extension']}.gz";
-            $minified = true;
-        } else {
-            $asset = "{$pathinfo['dirname']}/{$filename}.{$mtime}.{$pathinfo['extension']}.gz";
-            $minified = false;
-        }
+        $asset = "{$pathinfo['dirname']}/{$pathinfo['filename']}"
+             . ( strpos( $asset, '.min.' ) !== false ? '.min' : '' )
+             . ".{$pathinfo['extension']}.gz";
+        $destpath = PUBLIC_PATH . "/$asset";
 
-        $destpath = PUBLIC_PATH . "/{$asset}";
-
-        if ( !file_exists( $destpath ) ) {
-            if ( !is_dir( dirname( $destpath ) ) ) {
-                mkdir( dirname( $destpath ), 0775, true );
-            }
-            $hnd = fopen( $destpath, 'ab+' );
-            flock( $hnd, LOCK_EX );
-            clearstatcache( true, $destpath );
-            if ( filesize( $destpath ) === 0 ) {
-                if ( !$minified && MINIFY_ASSETS ) {
-                    $minify = new Minify( new Minify_Cache_Null );
-                    $contents = $minify->combine( [$srcpath] );
-                } else {
-                    $contents = file_get_contents( $srcpath );
-                }
-                $contents = gzencode( $contents, 9 );
-                fwrite( $hnd, $contents );
-            }
-            flock( $hnd, LOCK_UN );
-            fclose( $hnd );
-        }
-    } else {
-        $asset .= "?v={$mtime}";
+        $fnWriteFileIfNotExists( $destpath, function () use ( $srcpath ) {
+            return gzencode( file_get_contents( $srcpath ), 9 );
+        } );
     }
+
+    $asset .= "?_={$mtime}";
 
     return $absolute
             ? rtrim( BASE_URL, '/' ) . "/{$asset}"
@@ -330,42 +337,3 @@ function get_standards()
     $cache['standards'] = escape( $standards );
     return $cache['standards'];
 }
-
-/**
- * @return void
- */
-function unlink_expired_assets()
-{
-    $itr = new RecursiveDirectoryIterator( PUBLIC_PATH );
-    $itr = new RecursiveIteratorIterator( $itr );
-
-    foreach ( $itr as $path => $splFileInfo ) {
-        /** @var $splFileInfo SplFileInfo */
-        if ( !preg_match( '#^(.+?)\.([a-z0-9]+)(\.min)?\.(css|js)\.gz$#i', $splFileInfo->getFilename(), $match ) ) {
-            continue;
-        }
-
-        $folder = str_replace( '\\', '/', dirname( substr( $path, strlen( PUBLIC_PATH ) + 1 ) ) );
-        $asset =  $folder. "/{$match[1]}{$match[3]}.{$match[4]}";
-
-        #region [converting a number base 10 to base 62 (a-zA-Z0-9)](http://stackoverflow.com/a/4964352/650329)
-
-        $base = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $b = strlen( $base );
-        $num = $match[2];
-        $limit = strlen( $num );
-        $mtime = strpos( $base, $num[0] );
-
-        for ( $i = 1; $i < $limit; $i++ ) {
-            $mtime = $b * $mtime + strpos( $base, $num[$i] );
-        }
-
-        #endregion
-
-        if ( filemtime( PUBLIC_PATH . "/{$asset}" ) != $mtime ) {
-            // delete the expired cache file
-            unlink( $path );
-        }
-    }
-}
-//EOF functions.php

@@ -1,6 +1,6 @@
 # Project
-public/**/*.css.gz
-public/**/*.js.gz
+public/**/*.min.*
+public/**/*.gz
 vendor/
 .env
 composer.lock
