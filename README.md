@@ -1,4 +1,5 @@
 # PHPMD Ruleset Builder
+[Live Demo](https://andrewmackrodt.github.io/phpmd-ruleset-builder/)
 
 Note: this project has not maintained since 2013 but works with the latest version of PHPMD as of May 2019.
 
