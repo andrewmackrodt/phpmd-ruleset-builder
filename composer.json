@@ -1,16 +1,36 @@
 {
   "name": "andrewmackrodt/phpmd-ruleset-builder",
+  "type": "project",
   "description": "A tool to quickly create PHPMD rulesets",
-  "license": "proprietary",
+  "license": "MIT",
   "keywords": [
     "phpmd",
     "pmd.xml"
   ],
-  "homepage": "https://bitbucket.org/andrewmackrodt/phpmd-ruleset-builder",
+  "authors": [
+    {
+      "name": "Andrew Mackrodt",
+      "email": "hello@andrewmackrodt.com"
+    }
+  ],
   "require": {
-    "phpmd/phpmd": "~2.2"
+    "php": ">=7.0",
+    "mrclay/minify": "^3.0",
+    "phpmd/phpmd": "^2.0",
+    "vlucas/phpdotenv": "^3.3"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master"
   },
   "config": {
-    "bin-dir": "bin"
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "prefer-stable": true,
+  "scripts": {
+    "start": [
+      "@php  -S 0.0.0.0:8080 router.php"
+    ]
   }
 }

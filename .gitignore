@@ -1,11 +1,9 @@
 # Project
-bin/
-conf/HEAD.php
-conf/settings.php
-src/public/assets/*.css.gz
-src/public/assets/*.js.gz
+public/**/*.css.gz
+public/**/*.js.gz
 vendor/
-.htaccess
+.env
+composer.lock
 
 # Platform
 .Trashes/

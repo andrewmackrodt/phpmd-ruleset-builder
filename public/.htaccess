@@ -9,12 +9,12 @@
 # Support for pre-compressed css and js files
 SetEnvIfNoCase Request_URI "\.gz" no-gzip dont-vary
 
-<Files *.js.gz>
-  AddEncoding gzip .js
-  ForceType application/x-javascript
-</Files>
-
 <Files *.css.gz>
   AddEncoding gzip .css
   ForceType text/css
+</Files>
+
+<Files *.js.gz>
+  AddEncoding gzip .js
+  ForceType application/x-javascript
 </Files>

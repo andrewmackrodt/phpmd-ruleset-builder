@@ -7,7 +7,7 @@
 function asset_url( $asset, $absolute = true )
 {
     $asset    = ltrim( $asset, '/' );
-    $srcpath  = ASSETS_PATH . "/{$asset}";
+    $srcpath  = PUBLIC_PATH . "/{$asset}";
     $pathinfo = pathinfo( $asset );
 
     #region [converting a number base 10 to base 62 (a-zA-Z0-9)](http://stackoverflow.com/a/4964352/650329)
@@ -44,7 +44,7 @@ function asset_url( $asset, $absolute = true )
             $minified = false;
         }
 
-        $destpath = ASSETS_PATH . "/{$asset}";
+        $destpath = PUBLIC_PATH . "/{$asset}";
 
         if ( !file_exists( $destpath ) ) {
             if ( !is_dir( dirname( $destpath ) ) ) {
@@ -54,15 +54,11 @@ function asset_url( $asset, $absolute = true )
             flock( $hnd, LOCK_EX );
             clearstatcache( true, $destpath );
             if ( filesize( $destpath ) === 0 ) {
-                $contents = file_get_contents( $srcpath );
                 if ( !$minified && MINIFY_ASSETS ) {
-                    if ( file_exists( JSMIN_PATH . '/JSMin.php' ) ) {
-                        require_once JSMIN_PATH . '/JSMin.php';
-                        $contents = JSMin::minify( $contents );
-                        $contents = str_replace( "\n", '', $contents );
-                    } else {
-                        trigger_error( 'JSMIN_PATH is invalid', E_USER_WARNING );
-                    }
+                    $minify = new Minify( new Minify_Cache_Null );
+                    $contents = $minify->combine( [$srcpath] );
+                } else {
+                    $contents = file_get_contents( $srcpath );
                 }
                 $contents = gzencode( $contents, 9 );
                 fwrite( $hnd, $contents );
@@ -75,7 +71,7 @@ function asset_url( $asset, $absolute = true )
     }
 
     return $absolute
-            ? rtrim( ASSETS_URL, '/' ) . "/{$asset}"
+            ? rtrim( BASE_URL, '/' ) . "/{$asset}"
             : $asset;
 }
 
@@ -85,35 +81,10 @@ function asset_url( $asset, $absolute = true )
  */
 function autodetect_rulesets_path()
 {
-    if (class_exists('\PHPMD\RuleSetFactory')) {
-        $ruleSetFactory = new \PHPMD\RuleSetFactory();
-        $ruleSets = $ruleSetFactory->listAvailableRuleSets();
-        if ( $ruleSets ) {
-            return dirname( $ruleSetFactory->createSingleRuleSet( $ruleSets[0] )->getFileName() );
-        }
-    }
+    $ruleSetFactory = new \PHPMD\RuleSetFactory();
+    $ruleSets = $ruleSetFactory->listAvailableRuleSets();
 
-    foreach ( explode( PATH_SEPARATOR, get_include_path() ) as $path ) {
-        $ruleSetFactory = "{$path}/PHP/PMD/RuleSetFactory.php";
-        $match = null;
-
-        // extract the value defined in the $location property
-        if ( !( file_exists( $ruleSetFactory )
-                && preg_match(
-                    '/\$location[\r\n\s\t]*=[\r\n\s\t]*("[^"]+"|\'[^\']+\')/',
-                    file_get_contents( $ruleSetFactory ),
-                    $match ) ) ) {
-            continue;
-        }
-
-        $rulesdir = substr( $match[1], 1, -1 ) . '/PHP_PMD/resources/rulesets';
-
-        if ( is_dir( $rulesdir ) && is_readable( $rulesdir ) ) {
-            return $rulesdir;
-        }
-    }
-
-    return false;
+    return dirname( $ruleSetFactory->createSingleRuleSet( $ruleSets[0] )->getFileName() );
 }
 
 /**
@@ -130,6 +101,19 @@ function autodetect_phpcs_path()
     }
 
     return false;
+}
+
+function env( $name, $default = '' )
+{
+    $value = getenv( $name );
+
+    return $value !== false
+        ? ( $value === 'true'
+            ? true
+            : ( $value === 'false'
+                ? false
+                : $value) )
+        : $default;
 }
 
 /**
@@ -193,7 +177,7 @@ function get_rulesets()
         return $cache['rulesets'];
     }
 
-    $rulesdir = realpath( RULESETS_PATH ) ?: autodetect_rulesets_path();
+    $rulesdir = autodetect_rulesets_path();
 
     if ( !is_dir( $rulesdir ) ) {
         trigger_error( 'PHPMD rulesets not found', E_USER_WARNING );
@@ -350,60 +334,9 @@ function get_standards()
 /**
  * @return void
  */
-function send_cache_manifest()
-{
-    header( 'Content-Type: text/cache-manifest' );
-
-    $manifest = array( 'CACHE MANIFEST', '' );
-
-    $scandir = function( $dir ) use ( &$scandir, &$manifest ) {
-        foreach ( scandir( $dir ) as $file ) {
-            if ( $file[0] == '.' ) {
-                continue;
-            }
-            $file = "{$dir}/{$file}";
-            if ( is_dir( $file ) ) {
-                $scandir( $file );
-            } else {
-                // only add the file if it has an allowed file extension
-                if ( !preg_match( '/\.(css|gif|js|png|swf)$/i', $file ) ) {
-                    continue;
-                }
-                // process the file through asset_url so we can use the gzip version
-                $asset = substr( $file, strlen( ASSETS_PATH ) + 1 );
-                $asset = asset_url( $asset, false );
-                if ( strpos( $asset, 'img/glyphicons' ) !== false
-                        || strpos( $asset, '.swf' ) !== false ) {
-                    $asset = substr( $asset, 0, strpos( $asset, '?' ) );
-                }
-                $manifest[] = "assets/{$asset}";
-            }
-        }
-    };
-
-    $scandir( ASSETS_PATH );
-
-    if ( file_exists( CONFIG_PATH . '/HEAD.php' ) ) {
-        include_once CONFIG_PATH . '/HEAD.php';
-        $modified = $GLOBALS['HEAD']['timestamp'];
-    } else {
-        chdir( BASE_PATH );
-        $modified = strtotime( `git log --pretty=format:"%ad" -1` );
-    }
-
-    $manifest[1] = '# Modified ' . date( DATE_ISO8601, $modified );
-    $manifest[] = 'FALLBACK:';
-    $manifest[] = 'index.php .';
-
-    echo implode( "\n", $manifest );
-}
-
-/**
- * @return void
- */
 function unlink_expired_assets()
 {
-    $itr = new RecursiveDirectoryIterator( ASSETS_PATH );
+    $itr = new RecursiveDirectoryIterator( PUBLIC_PATH );
     $itr = new RecursiveIteratorIterator( $itr );
 
     foreach ( $itr as $path => $splFileInfo ) {
@@ -412,7 +345,7 @@ function unlink_expired_assets()
             continue;
         }
 
-        $folder = str_replace( '\\', '/', dirname( substr( $path, strlen( ASSETS_PATH ) + 1 ) ) );
+        $folder = str_replace( '\\', '/', dirname( substr( $path, strlen( PUBLIC_PATH ) + 1 ) ) );
         $asset =  $folder. "/{$match[1]}{$match[3]}.{$match[4]}";
 
         #region [converting a number base 10 to base 62 (a-zA-Z0-9)](http://stackoverflow.com/a/4964352/650329)
@@ -429,7 +362,7 @@ function unlink_expired_assets()
 
         #endregion
 
-        if ( filemtime( ASSETS_PATH . "/{$asset}" ) != $mtime ) {
+        if ( filemtime( PUBLIC_PATH . "/{$asset}" ) != $mtime ) {
             // delete the expired cache file
             unlink( $path );
         }
