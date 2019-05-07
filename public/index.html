@@ -1,0 +1,1514 @@
+<!-- Auto-generated page using phpmd 2.6.0 on 2019-05-07 -->
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>PHPMD Ruleset Builder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content="Andrew Mackrodt"/>
+    <link href="css/bootstrap.css" rel="stylesheet"/>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet"/>
+    <link href="css/bootstrap-switch.css" rel="stylesheet"/>
+    <link href="css/style.css" rel="stylesheet"/>
+</head>
+<body data-spy="scroll" data-target="#navbar-container">
+<div class="container">
+    <div class="row">
+        <div id="navbar-container" class="span3">
+            <ul id="navbar" class="nav nav-list affix">
+                <li>
+                    <a href="#basicsettings"><i class="icon-chevron-right"></i> Basic Settings</a>
+                </li>
+                <li>
+                    <a href="#cleancode"><i class="icon-chevron-right"></i> Clean Code Rules</a>
+                </li>
+                <li>
+                    <a href="#codesize"><i class="icon-chevron-right"></i> Code Size Rules</a>
+                </li>
+                <li>
+                    <a href="#controversial"><i class="icon-chevron-right"></i> Controversial Rules</a>
+                </li>
+                <li>
+                    <a href="#design"><i class="icon-chevron-right"></i> Design Rules</a>
+                </li>
+                <li>
+                    <a href="#naming"><i class="icon-chevron-right"></i> Naming Rules</a>
+                </li>
+                <li>
+                    <a href="#unusedcode"><i class="icon-chevron-right"></i> Unused Code Rules</a>
+                </li>
+                <li>
+                    <a href="#phpmd"><i class="icon-chevron-right"></i> PHPMD Ruleset</a>
+                </li>
+            </ul>
+        </div>
+        <div class="span9">
+            <div id="github">
+                <img src="img/github.png" alt="" width="16px" height="16px"/>
+                <small>
+                    <a href="https://github.com/andrewmackrodt/phpmd-ruleset-builder" target="_blank">Fork me on
+                        GitHub</a>
+                </small>
+            </div>
+            <h1>PHPMD Ruleset Builder</h1>
+            <div>
+                <p>A tool to quickly create PHPMD rulesets.</p>
+                <p>PHPMD analyzes a PHP project for potential problems within its code. These include:</p>
+                <ul>
+                    <li>Possible bugs</li>
+                    <li>Suboptimal code</li>
+                    <li>Overcomplicated expressions</li>
+                    <li>Unused parameters, methods and properties</li>
+                </ul>
+                <p><a href="http://phpmd.org/" target="_blank">Find out more</a></p>
+            </div>
+
+            <form class="form-horizontal">
+                <fieldset id="basicsettings">
+                    <legend>Basic Settings</legend>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <label><strong>Name</strong></label>
+                        </div>
+                        <div class="controls">
+                            <input class="span3" type="text" name="name" placeholder="The name of the ruleset">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <label><strong>Description</strong></label>
+                        </div>
+                        <div class="controls">
+                            <textarea class="span5" name="description"
+                                      placeholder="A short description describing the ruleset"></textarea>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="advanced" type="checkbox"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <p>
+                                <strong>Advanced Settings</strong>
+                                Allows changing the reporting priority and configurable options of rules.
+                            </p>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset id="cleancode" class="ruleset">
+                    <legend>Clean Code Rules</legend>
+                    <p>
+                        The Clean Code ruleset contains rules that enforce a clean code base. This includes rules from
+                        SOLID and object calisthenics.
+                    </p>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/cleancode.xml/BooleanArgumentFlag[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>BooleanArgumentFlag</strong>
+
+
+                                    A boolean flag argument is a reliable indicator for a violation of
+                                    the Single Responsibility Principle (SRP). You can fix this problem
+                                    by extracting the logic in the boolean flag into its own class
+                                    or method.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/cleancode.xml/BooleanArgumentFlag[priority]"
+                                            data-default="1">
+                                        <option value="1" selected="selected">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/cleancode.xml/ElseExpression[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>ElseExpression</strong>
+
+
+                                    An if expression with an else branch is never necessary. You can rewrite the
+                                    conditions in a way that the else is not necessary and the code becomes simpler
+                                    to read. To achieve this use early return statements. To achieve this you may
+                                    need to split the code it several smaller methods. For very simple assignments
+                                    you could also use the ternary operations.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/cleancode.xml/ElseExpression[priority]" data-default="1">
+                                        <option value="1" selected="selected">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/cleancode.xml/StaticAccess[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>StaticAccess</strong>
+
+
+                                    Static access causes unexchangeable dependencies to other classes and leads to hard
+                                    to test code. Avoid
+                                    using static access at all costs and instead inject dependencies through the
+                                    constructor. The only
+                                    case when static access is acceptable is when used for factory methods.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/cleancode.xml/StaticAccess[priority]" data-default="1">
+                                        <option value="1" selected="selected">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>exceptions</strong>
+                                        Comma-separated class name list of exceptions </p>
+                                    <input name="rulesets/cleancode.xml/StaticAccess[exceptions]" placeholder=""
+                                           type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset id="codesize" class="ruleset">
+                    <legend>Code Size Rules</legend>
+                    <p>
+                        The Code Size Ruleset contains a collection of rules that find code size related problems.
+                    </p>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/codesize.xml/CyclomaticComplexity[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>CyclomaticComplexity</strong>
+
+
+                                    Complexity is determined by the number of decision points in a method plus one for
+                                    the
+                                    method entry. The decision points are &#039;if&#039;, &#039;while&#039;, &#039;for&#039;,
+                                    and &#039;case labels&#039;. Generally,
+                                    1-4 is low complexity, 5-7 indicates moderate complexity, 8-10 is high complexity,
+                                    and 11+ is very high complexity.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/codesize.xml/CyclomaticComplexity[priority]"
+                                            data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>reportLevel</strong>
+                                        The Cyclomatic Complexity reporting threshold </p>
+                                    <input name="rulesets/codesize.xml/CyclomaticComplexity[reportLevel]"
+                                           placeholder="10" type="text"/>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>showClassesComplexity</strong>
+                                        Indicate if class average violation should be added to the report </p>
+                                    <input name="rulesets/codesize.xml/CyclomaticComplexity[showClassesComplexity]"
+                                           placeholder="true" type="text"/>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>showMethodsComplexity</strong>
+                                        Indicate if class average violation should be added to the report </p>
+                                    <input name="rulesets/codesize.xml/CyclomaticComplexity[showMethodsComplexity]"
+                                           placeholder="true" type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/codesize.xml/NPathComplexity[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>NPathComplexity</strong>
+
+                                    The NPath complexity of a method is the number of acyclic execution paths through
+                                    that method.
+                                    A threshold of 200 is generally considered the point where measures should be taken
+                                    to reduce complexity.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/codesize.xml/NPathComplexity[priority]" data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>minimum</strong>
+                                        The npath reporting threshold </p>
+                                    <input name="rulesets/codesize.xml/NPathComplexity[minimum]" placeholder="200"
+                                           type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/codesize.xml/ExcessiveMethodLength[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>ExcessiveMethodLength</strong>
+
+                                    Violations of this rule usually indicate that the method is doing
+                                    too much. Try to reduce the method size by creating helper methods and removing any
+                                    copy/pasted code.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/codesize.xml/ExcessiveMethodLength[priority]"
+                                            data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>minimum</strong>
+                                        The method size reporting threshold </p>
+                                    <input name="rulesets/codesize.xml/ExcessiveMethodLength[minimum]" placeholder="100"
+                                           type="text"/>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>ignore-whitespace</strong>
+                                        Count whitespace in reporting threshold </p>
+                                    <input name="rulesets/codesize.xml/ExcessiveMethodLength[ignore-whitespace]"
+                                           placeholder="false" type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/codesize.xml/ExcessiveClassLength[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>ExcessiveClassLength</strong>
+
+                                    Long Class files are indications that the class may be trying to
+                                    do too much. Try to break it down, and reduce the size to something
+                                    manageable.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/codesize.xml/ExcessiveClassLength[priority]"
+                                            data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>minimum</strong>
+                                        The class size reporting threshold </p>
+                                    <input name="rulesets/codesize.xml/ExcessiveClassLength[minimum]" placeholder="1000"
+                                           type="text"/>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>ignore-whitespace</strong>
+                                        Count whitespace in reporting threshold </p>
+                                    <input name="rulesets/codesize.xml/ExcessiveClassLength[ignore-whitespace]"
+                                           placeholder="false" type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/codesize.xml/ExcessiveParameterList[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>ExcessiveParameterList</strong>
+
+                                    Long parameter lists can indicate that a new object should be created to
+                                    wrap the numerous parameters. Basically, try to group the parameters together.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/codesize.xml/ExcessiveParameterList[priority]"
+                                            data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>minimum</strong>
+                                        The parameter count reporting threshold </p>
+                                    <input name="rulesets/codesize.xml/ExcessiveParameterList[minimum]" placeholder="10"
+                                           type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/codesize.xml/ExcessivePublicCount[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>ExcessivePublicCount</strong>
+
+                                    A large number of public methods and attributes declared in a class can indicate
+                                    the class may need to be broken up as increased effort will be required to
+                                    thoroughly test it.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/codesize.xml/ExcessivePublicCount[priority]"
+                                            data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>minimum</strong>
+                                        The public item reporting threshold </p>
+                                    <input name="rulesets/codesize.xml/ExcessivePublicCount[minimum]" placeholder="45"
+                                           type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/codesize.xml/TooManyFields[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>TooManyFields</strong>
+
+                                    Classes that have too many fields could be redesigned to have fewer fields,
+                                    possibly through some nested object grouping of some of the information. For
+                                    example, a class with city/state/zip fields could instead have one Address
+                                    field.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/codesize.xml/TooManyFields[priority]" data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>maxfields</strong>
+                                        The field count reporting threshold </p>
+                                    <input name="rulesets/codesize.xml/TooManyFields[maxfields]" placeholder="15"
+                                           type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/codesize.xml/TooManyMethods[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>TooManyMethods</strong>
+
+
+                                    A class with too many methods is probably a good suspect for refactoring, in
+                                    order to reduce its complexity and find a way to have more fine grained objects.
+
+                                    By default it ignores methods starting with &#039;get&#039; or &#039;set&#039;.
+
+                                    The default was changed from 10 to 25 in PHPMD 2.3.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/codesize.xml/TooManyMethods[priority]" data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>maxmethods</strong>
+                                        The method count reporting threshold </p>
+                                    <input name="rulesets/codesize.xml/TooManyMethods[maxmethods]" placeholder="25"
+                                           type="text"/>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>ignorepattern</strong>
+                                        Ignore methods matching this regex </p>
+                                    <input name="rulesets/codesize.xml/TooManyMethods[ignorepattern]"
+                                           placeholder="(^(set|get))i" type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/codesize.xml/TooManyPublicMethods[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>TooManyPublicMethods</strong>
+
+
+                                    A class with too many public methods is probably a good suspect for refactoring, in
+                                    order to reduce its complexity and find a way to have more fine grained objects.
+
+                                    By default it ignores methods starting with &#039;get&#039; or &#039;set&#039;.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/codesize.xml/TooManyPublicMethods[priority]"
+                                            data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>maxmethods</strong>
+                                        The method count reporting threshold </p>
+                                    <input name="rulesets/codesize.xml/TooManyPublicMethods[maxmethods]"
+                                           placeholder="10" type="text"/>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>ignorepattern</strong>
+                                        Ignore methods matching this regex </p>
+                                    <input name="rulesets/codesize.xml/TooManyPublicMethods[ignorepattern]"
+                                           placeholder="(^(set|get))i" type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/codesize.xml/ExcessiveClassComplexity[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>ExcessiveClassComplexity</strong>
+
+
+                                    The Weighted Method Count (WMC) of a class is a good indicator of how much time
+                                    and effort is required to modify and maintain this class. The WMC metric is defined
+                                    as the sum of complexities of all methods declared in a class. A large number of
+                                    methods also means that this class has a greater potential impact on derived
+                                    classes.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/codesize.xml/ExcessiveClassComplexity[priority]"
+                                            data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>maximum</strong>
+                                        The maximum WMC tolerable for a class. </p>
+                                    <input name="rulesets/codesize.xml/ExcessiveClassComplexity[maximum]"
+                                           placeholder="50" type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset id="controversial" class="ruleset">
+                    <legend>Controversial Rules</legend>
+                    <p>
+                        This ruleset contains a collection of controversial rules.
+                    </p>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/controversial.xml/Superglobals[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>Superglobals</strong>
+
+
+                                    Accessing a super-global variable directly is considered a bad practice.
+                                    These variables should be encapsulated in objects that are provided by a framework,
+                                    for instance.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/controversial.xml/Superglobals[priority]" data-default="1">
+                                        <option value="1" selected="selected">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/controversial.xml/CamelCaseClassName[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>CamelCaseClassName</strong>
+
+
+                                    It is considered best practice to use the CamelCase notation to name classes.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/controversial.xml/CamelCaseClassName[priority]"
+                                            data-default="1">
+                                        <option value="1" selected="selected">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/controversial.xml/CamelCasePropertyName[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>CamelCasePropertyName</strong>
+
+
+                                    It is considered best practice to use the camelCase notation to name attributes.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/controversial.xml/CamelCasePropertyName[priority]"
+                                            data-default="1">
+                                        <option value="1" selected="selected">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>allow-underscore</strong>
+                                        Allow an optional, single underscore at the beginning. </p>
+                                    <input name="rulesets/controversial.xml/CamelCasePropertyName[allow-underscore]"
+                                           placeholder="false" type="text"/>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>allow-underscore-test</strong>
+                                        Is it allowed to have underscores in test method names. </p>
+                                    <input name="rulesets/controversial.xml/CamelCasePropertyName[allow-underscore-test]"
+                                           placeholder="false" type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/controversial.xml/CamelCaseMethodName[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>CamelCaseMethodName</strong>
+
+
+                                    It is considered best practice to use the camelCase notation to name methods.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/controversial.xml/CamelCaseMethodName[priority]"
+                                            data-default="1">
+                                        <option value="1" selected="selected">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>allow-underscore</strong>
+                                        Allow an optional, single underscore at the beginning. </p>
+                                    <input name="rulesets/controversial.xml/CamelCaseMethodName[allow-underscore]"
+                                           placeholder="false" type="text"/>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>allow-underscore-test</strong>
+                                        Is it allowed to have underscores in test method names. </p>
+                                    <input name="rulesets/controversial.xml/CamelCaseMethodName[allow-underscore-test]"
+                                           placeholder="false" type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/controversial.xml/CamelCaseParameterName[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>CamelCaseParameterName</strong>
+
+
+                                    It is considered best practice to use the camelCase notation to name parameters.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/controversial.xml/CamelCaseParameterName[priority]"
+                                            data-default="1">
+                                        <option value="1" selected="selected">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/controversial.xml/CamelCaseVariableName[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>CamelCaseVariableName</strong>
+
+
+                                    It is considered best practice to use the camelCase notation to name variables.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/controversial.xml/CamelCaseVariableName[priority]"
+                                            data-default="1">
+                                        <option value="1" selected="selected">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset id="design" class="ruleset">
+                    <legend>Design Rules</legend>
+                    <p>
+                        The Design Ruleset contains a collection of rules that find software design related problems.
+                    </p>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/design.xml/ExitExpression[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>ExitExpression</strong>
+
+
+                                    An exit-expression within regular code is untestable and therefore it should
+                                    be avoided. Consider to move the exit-expression into some kind of startup
+                                    script where an error/exception code is returned to the calling environment.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/design.xml/ExitExpression[priority]" data-default="1">
+                                        <option value="1" selected="selected">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/design.xml/EvalExpression[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>EvalExpression</strong>
+
+
+                                    An eval-expression is untestable, a security risk and bad practice. Therefore
+                                    it should be avoided. Consider to replace the eval-expression with regular
+                                    code.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/design.xml/EvalExpression[priority]" data-default="1">
+                                        <option value="1" selected="selected">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/design.xml/GotoStatement[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>GotoStatement</strong>
+
+
+                                    Goto makes code harder to read and it is nearly impossible to understand the
+                                    control flow of an application that uses this language construct. Therefore it
+                                    should be avoided. Consider to replace Goto with regular control structures and
+                                    separate methods/function, which are easier to read.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/design.xml/GotoStatement[priority]" data-default="1">
+                                        <option value="1" selected="selected">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/design.xml/NumberOfChildren[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>NumberOfChildren</strong>
+
+
+                                    A class with an excessive number of children is an indicator for an unbalanced
+                                    class hierarchy. You should consider to refactor this class hierarchy.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/design.xml/NumberOfChildren[priority]" data-default="2">
+                                        <option value="1">highest</option>
+                                        <option value="2" selected="selected">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>minimum</strong>
+                                        Maximum number of acceptable child classes. </p>
+                                    <input name="rulesets/design.xml/NumberOfChildren[minimum]" placeholder="15"
+                                           type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/design.xml/DepthOfInheritance[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>DepthOfInheritance</strong>
+
+
+                                    A class with many parents is an indicator for an unbalanced and wrong class
+                                    hierarchy. You should consider to refactor this class hierarchy.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/design.xml/DepthOfInheritance[priority]" data-default="2">
+                                        <option value="1">highest</option>
+                                        <option value="2" selected="selected">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>minimum</strong>
+                                        Maximum number of acceptable parent classes. </p>
+                                    <input name="rulesets/design.xml/DepthOfInheritance[minimum]" placeholder="6"
+                                           type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/design.xml/CouplingBetweenObjects[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>CouplingBetweenObjects</strong>
+
+
+                                    A class with too many dependencies has negative impacts on several quality
+                                    aspects of a class. This includes quality criteria like stability,
+                                    maintainability and understandability
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/design.xml/CouplingBetweenObjects[priority]"
+                                            data-default="2">
+                                        <option value="1">highest</option>
+                                        <option value="2" selected="selected">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>minimum</strong>
+                                        Maximum number of acceptable dependencies. </p>
+                                    <input name="rulesets/design.xml/CouplingBetweenObjects[minimum]" placeholder="13"
+                                           type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/design.xml/DevelopmentCodeFragment[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>DevelopmentCodeFragment</strong>
+
+
+                                    Functions like var_dump(), print_r() etc. are normally only used during development
+                                    and therefore such calls in production code are a good indicator that they were
+                                    just forgotten.
+
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/design.xml/DevelopmentCodeFragment[priority]"
+                                            data-default="2">
+                                        <option value="1">highest</option>
+                                        <option value="2" selected="selected">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>unwanted-functions</strong>
+                                        Comma separated list of suspect function images. </p>
+                                    <input name="rulesets/design.xml/DevelopmentCodeFragment[unwanted-functions]"
+                                           placeholder="var_dump,print_r,debug_zval_dump,debug_print_backtrace"
+                                           type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset id="naming" class="ruleset">
+                    <legend>Naming Rules</legend>
+                    <p>
+                        The Naming Ruleset contains a collection of rules about names - too long, too short, and so
+                        forth.
+                    </p>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/naming.xml/ShortVariable[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>ShortVariable</strong>
+
+                                    Detects when a field, local, or parameter has a very short name.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/naming.xml/ShortVariable[priority]" data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>minimum</strong>
+                                        Minimum length for a variable, property or parameter name </p>
+                                    <input name="rulesets/naming.xml/ShortVariable[minimum]" placeholder="3"
+                                           type="text"/>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>exceptions</strong>
+                                        Comma-separated list of exceptions </p>
+                                    <input name="rulesets/naming.xml/ShortVariable[exceptions]" placeholder=""
+                                           type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/naming.xml/LongVariable[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>LongVariable</strong>
+
+                                    Detects when a field, formal or local variable is declared with a long name.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/naming.xml/LongVariable[priority]" data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>maximum</strong>
+                                        The variable length reporting threshold </p>
+                                    <input name="rulesets/naming.xml/LongVariable[maximum]" placeholder="20"
+                                           type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/naming.xml/ShortMethodName[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>ShortMethodName</strong>
+
+                                    Detects when very short method names are used.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/naming.xml/ShortMethodName[priority]" data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>minimum</strong>
+                                        Minimum length for a method or function name </p>
+                                    <input name="rulesets/naming.xml/ShortMethodName[minimum]" placeholder="3"
+                                           type="text"/>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>exceptions</strong>
+                                        Comma-separated list of exceptions </p>
+                                    <input name="rulesets/naming.xml/ShortMethodName[exceptions]" placeholder=""
+                                           type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/naming.xml/ConstructorWithNameAsEnclosingClass[enabled]"
+                                       type="checkbox" checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>ConstructorWithNameAsEnclosingClass</strong>
+
+                                    A constructor method should not have the same name as the enclosing class, consider
+                                    to use the PHP 5 __construct method.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/naming.xml/ConstructorWithNameAsEnclosingClass[priority]"
+                                            data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/naming.xml/ConstantNamingConventions[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>ConstantNamingConventions</strong>
+
+                                    Class/Interface constant names should always be defined in uppercase.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/naming.xml/ConstantNamingConventions[priority]"
+                                            data-default="4">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4" selected="selected">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/naming.xml/BooleanGetMethodName[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>BooleanGetMethodName</strong>
+
+                                    Looks for methods named &#039;getX()&#039; with &#039;boolean&#039; as the return
+                                    type. The convention
+                                    is to name these methods &#039;isX()&#039; or &#039;hasX()&#039;.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/naming.xml/BooleanGetMethodName[priority]" data-default="4">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3">normal</option>
+                                        <option value="4" selected="selected">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>checkParameterizedMethods</strong>
+                                        Applies only to methods without parameter when set to true </p>
+                                    <input name="rulesets/naming.xml/BooleanGetMethodName[checkParameterizedMethods]"
+                                           placeholder="false" type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset id="unusedcode" class="ruleset">
+                    <legend>Unused Code Rules</legend>
+                    <p>
+                        The Unused Code Ruleset contains a collection of rules that find unused code.
+                    </p>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/unusedcode.xml/UnusedPrivateField[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>UnusedPrivateField</strong>
+
+                                    Detects when a private field is declared and/or assigned a value, but not used.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/unusedcode.xml/UnusedPrivateField[priority]"
+                                            data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/unusedcode.xml/UnusedLocalVariable[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>UnusedLocalVariable</strong>
+
+                                    Detects when a local variable is declared and/or assigned, but not used.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/unusedcode.xml/UnusedLocalVariable[priority]"
+                                            data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                                <div class="control-group property">
+                                    <p>
+                                        <strong>allow-unused-foreach-variables</strong>
+                                        Allow unused variables in foreach language constructs. </p>
+                                    <input name="rulesets/unusedcode.xml/UnusedLocalVariable[allow-unused-foreach-variables]"
+                                           placeholder="false" type="text"/>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/unusedcode.xml/UnusedPrivateMethod[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>UnusedPrivateMethod</strong>
+
+                                    Unused Private Method detects when a private method is declared but is unused.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/unusedcode.xml/UnusedPrivateMethod[priority]"
+                                            data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="control-group rule">
+                        <div class="control-label">
+                            <div class="switch switch-medium">
+                                <input name="rulesets/unusedcode.xml/UnusedFormalParameter[enabled]" type="checkbox"
+                                       checked="checked"/>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div>
+                                <p>
+                                    <strong>UnusedFormalParameter</strong>
+
+                                    Avoid passing parameters to methods or constructors and then not using those
+                                    parameters.
+                                </p>
+                            </div>
+                            <fieldset class="options">
+                                <div class="control-group priority">
+                                    <select name="rulesets/unusedcode.xml/UnusedFormalParameter[priority]"
+                                            data-default="3">
+                                        <option value="1">highest</option>
+                                        <option value="2">high</option>
+                                        <option value="3" selected="selected">normal</option>
+                                        <option value="4">low</option>
+                                        <option value="5">lowest</option>
+                                    </select>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+
+            <fieldset id="phpmd">
+                <legend>PHPMD Ruleset</legend>
+                <a href="#" class="btn btn-link downloadify" id="save">Save phpmd.xml</a>
+                <pre></pre>
+            </fieldset>
+        </div>
+        <div id="footer">
+            <small>&copy; 2019 <a href="https://andrewmackrodt.com/">Andrew Mackrodt</a></small>
+        </div>
+    </div>
+</div>
+<script src="js/jquery.3.4.1.js"></script>
+<script src="js/jquery.placeholder.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/jquery.switch.js"></script>
+<script src="js/swfobject.js"></script>
+<script src="js/downloadify.js"></script>
+<script src="js/functions.js"></script>
+</body>
+</html>

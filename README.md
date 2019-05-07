@@ -1,5 +1,7 @@
 # PHPMD Ruleset Builder
 
+Note: this project has not maintained since 2013 but works with the latest version of PHPMD as of May 2019.
+
 ## Introduction
 PHPMD Ruleset Builder is a user friendly web application to quickly generate PHPMD rulesets.
 

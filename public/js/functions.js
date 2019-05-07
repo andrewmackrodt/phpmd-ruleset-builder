@@ -49,7 +49,7 @@ function createDownloadButton( selector, callback, filename, mime )
             'downloadImage': null,
             'filename': filename,
             'height': el.height(),
-            'swf': BASE_URL + '/assets/swf/downloadify.swf',
+            'swf': 'assets/swf/downloadify.swf',
             'transparent': true,
             'width': el.width()
         } )
